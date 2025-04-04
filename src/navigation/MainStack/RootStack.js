@@ -10,10 +10,13 @@ import { OnboardingStack } from '../ChildStack/OnboardingStack';
 const Stack = createStackNavigator();
 export function RootStack() {
   return (
-    <NavigationContainer
-      initialRouteName="HR"
-    >
-      <Stack.Navigator>
+    <NavigationContainer>
+      <Stack.Navigator
+        screenOptions={{
+          headerShown: false,
+        }}
+        initialRouteName='Employee'
+      >
         <Stack.Screen name="HR" component={HRStack} />
         <Stack.Screen name="Employee" component={EmployeeStack} />
         <Stack.Screen name="Admin" component={AdminStack} />

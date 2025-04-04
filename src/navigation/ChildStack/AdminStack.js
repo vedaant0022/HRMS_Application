@@ -7,7 +7,11 @@ import AdminTab from '../BottomTab/AdminTab';
 const Admin = createStackNavigator();
 const AdminStack = () => {
   return (
-    <Admin.Navigator>
+    <Admin.Navigator
+      screenOptions={{
+        headerShown: false
+      }}
+    >
       <Admin.Screen name="AdminTabs" component={AdminTab} />
     </Admin.Navigator>
   )

@@ -6,7 +6,11 @@ import EmployeeTab from '../BottomTab/EmployeeTab';
 const Employee = createStackNavigator();
 const EmployeeStack = () => {
   return (
-    <Employee.Navigator>
+    <Employee.Navigator
+    screenOptions={{
+      headerShown:false
+    }}
+    >
       <Employee.Screen name="EmployeeTab" component={EmployeeTab} />
     </Employee.Navigator>
   )

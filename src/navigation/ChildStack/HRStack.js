@@ -7,7 +7,11 @@ import HRtabs from '../BottomTab/HRTabs';
 const HrStack = createStackNavigator();
 export function HRStack() {
   return (
-    <HrStack.Navigator>
+    <HrStack.Navigator
+    screenOptions={{
+      headerShown:false
+    }}
+    >
       <HrStack.Screen name="HRTabs" component={HRtabs} />
     </HrStack.Navigator>
   )

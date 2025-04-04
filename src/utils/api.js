@@ -2,7 +2,7 @@ import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage'
 
 
-const base_url = 'http://13.202.242.247:3004/'
+const base_url = 'http://34.93.193.199:8000/'
 const version = 'v1'
 
 
