@@ -14,7 +14,7 @@ const Home = () => {
         {/* Header */}
         <View style={{ marginLeft: moderateScale(20), marginRight: moderateScale(20), }}>
         </View>
-        <View style={{ marginTop: moderateScaleVertical(20), height: moderateScaleVertical(500), }}>
+        <View style={{ marginTop: moderateScaleVertical(20), height: moderateScaleVertical(450), }}>
           <Map />
         </View>
 

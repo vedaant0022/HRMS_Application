@@ -3,6 +3,7 @@
   <uses-permission android:name="android.permission.INTERNET" />
   <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
   <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+  <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
 
 
   <application
@@ -27,7 +28,7 @@
     </activity>
     <meta-data
       android:name="com.google.android.geo.API_KEY"
-      android:value="AIzaSyDdVaVG6t_14KnvYN_qwniWZYYXIJbkWYo" />
+      android:value="AIzaSyCwLKyMLGDXd9jACSHLQ4BK4YMMgj9FLgo" />
 
   </application>
 </manifest>

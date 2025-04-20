@@ -10,7 +10,7 @@ const EmployeeStack = () => {
     screenOptions={{
       headerShown:false
     }}
-    initialRouteName='Login'
+    // initialRouteName='Login'
     >
       <Employee.Screen name="EmployeeTab" component={EmployeeTab} />
 

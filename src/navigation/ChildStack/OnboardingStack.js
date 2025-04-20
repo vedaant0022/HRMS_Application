@@ -9,10 +9,10 @@ const Onboarding = createStackNavigator();
 export function OnboardingStack() {
     return (
         <Onboarding.Navigator
-        screenOptions={{
-            headerShown:false
-        }}
-        initialRouteName='Login'
+            screenOptions={{
+                headerShown: false
+            }}
+            initialRouteName="Login"
         >
             <Onboarding.Screen name="Splash" component={Splash} />
             <Onboarding.Screen name="Login" component={Login} />

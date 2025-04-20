@@ -36,7 +36,7 @@ const Login = () => {
           />
         </View>
         {/* Title */}
-        <View style={{ marginTop: moderateScaleVertical(150), alignItems: 'center' }}>
+        <View style={{ marginTop: moderateScaleVertical(120), alignItems: 'center' }}>
           <Text style={{ fontSize: 25, fontWeight: '500', letterSpacing: 2 }}>Login to <Text style={{ color: 'orange' }}>EaseEmployee</Text></Text>
         </View>
 
@@ -104,7 +104,7 @@ const Login = () => {
                   Login
                 </Text>
               )} */}
-              <Text style={{ fontWeight: '500', fontSize: 21, color: 'black', letterSpacing: 3 }}>
+              <Text style={{ fontWeight: '500', fontSize: 21, color: 'white', letterSpacing: 3 }}>
                 Login
               </Text>
             </View>

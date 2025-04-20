@@ -109,7 +109,7 @@ const OTP = () => {
                               Login
                             </Text>
                           )} */}
-                  <Text style={{ fontWeight: '500', fontSize: 21, color: 'black', letterSpacing: 3 }}>
+                  <Text style={{ fontWeight: '500', fontSize: 21, color: 'white', letterSpacing: 2 }}>
                     Submit
                   </Text>
                 </View>

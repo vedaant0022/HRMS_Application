@@ -102,7 +102,7 @@ const EmployeeTab = () => {
               source={{uri:'https://cdn-icons-png.flaticon.com/512/25/25694.png'}}
               style={{ height: 25, width: 25, tintColor: '#000000' ,alignSelf:'center',justifyContent:'center',marginTop:15,}}
             />
-            <Text style={{ fontWeight: '400', color: focused ? '#000000' : 'grey', fontSize: 13, width: 50, textAlign: 'center' ,top:25}}>Home</Text>
+            <Text style={{ fontWeight: '400', color: focused ? '#000000' : 'grey', fontSize: 13, width: 50, textAlign: 'center' ,top:15}}>Home</Text>
           </View>
         )
       }} />
