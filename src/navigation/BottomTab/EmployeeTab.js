@@ -96,7 +96,7 @@ const EmployeeTab = () => {
 
       <Tab.Screen name="Home" component={Home} options={{
         tabBarIcon: ({ focused }) => (
-          <View style={{ alignItems: 'center', top: -25, justifyContent: 'center',height: 50, width: 50, backgroundColor: 'orange',alignItems:'center',borderRadius:60}}>
+          <View style={{ alignItems: 'center', top: -10, justifyContent: 'center',height: 50, width: 50, backgroundColor: 'orange',alignItems:'center',borderRadius:60}}>
             <Image
               // source={require('../../assets/icons/Home.png')}
               source={{uri:'https://cdn-icons-png.flaticon.com/512/25/25694.png'}}
