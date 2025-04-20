@@ -14,7 +14,7 @@ const Home = () => {
         {/* Header */}
         <View style={{ marginLeft: moderateScale(20), marginRight: moderateScale(20), }}>
         </View>
-        <View style={{ marginTop: moderateScaleVertical(20), height: moderateScaleVertical(550),flex:1 }}>
+        <View style={{ marginTop: moderateScaleVertical(20), height: moderateScaleVertical(500), }}>
           <Map />
         </View>
 
@@ -28,7 +28,7 @@ const Home = () => {
               </Text>
             </View>
             {/* Hours */}
-            <View style={{flex:1,position:'absolute',bottom:100}}>
+            <View style={{flex:1,position:'absolute',bottom:110}}>
               <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: moderateScaleVertical(15), flex: 1 }}>
                 <View>
                   <Text style={{ color: '#000', fontWeight: '400', fontSize: 16 }}>--:--</Text>
