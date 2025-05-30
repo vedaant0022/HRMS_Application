@@ -15,7 +15,7 @@ export function RootStack() {
         screenOptions={{
           headerShown: false,
         }}
-        initialRouteName='Onboarding'
+        initialRouteName='Employee'
       >
         <Stack.Screen name="HR" component={HRStack} />
         <Stack.Screen name="Employee" component={EmployeeStack} />
