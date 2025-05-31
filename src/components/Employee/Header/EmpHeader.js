@@ -3,7 +3,7 @@ import React from 'react'
 import { moderateScale, moderateScaleVertical } from '../../../styles/Responsiveness/responsiveSize'
 import { useNavigation } from '@react-navigation/native'
 
-const EmpHeader = () => {
+const EmpHeader = (props) => {
   const navigation = useNavigation()
   return (
     <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
@@ -19,7 +19,7 @@ const EmpHeader = () => {
           }}
         />
       </TouchableOpacity>
-      <Text style={{ fontSize: 18 }}>Reset Password</Text>
+      <Text style={{ fontSize: 18 }}>{props.name}</Text>
       <View></View>
     </View>
   )
