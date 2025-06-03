@@ -28,7 +28,7 @@ const Profile = () => {
 
           <View style={{ width: '90%', alignSelf: 'center', marginTop: moderateScaleVertical(50) }}>
             {/* My Shifts */}
-            <TouchableOpacity
+            {/* <TouchableOpacity
             onPress={()=>{navigation.navigate('Shifts')}}
             >
               <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -42,13 +42,13 @@ const Profile = () => {
                   }}
                 />
               </View>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
             <View style={{ borderWidth: 1, marginTop: moderateScaleVertical(15), borderColor: '#f5f4f4', }}></View>
 
             {/* Profile Information */}
-            <TouchableOpacity 
-            onPress={()=>{navigation.navigate('Myprofile')}}
-            style={{ marginTop: moderateScaleVertical(12) }}>
+            <TouchableOpacity
+              onPress={() => { navigation.navigate('Myprofile') }}
+              style={{ marginTop: moderateScaleVertical(12) }}>
               <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
                 <Text style={{ fontSize: 18, color: 'black', fontWeight: '500' }}>Profile Information </Text>
                 <Image
@@ -65,9 +65,9 @@ const Profile = () => {
 
 
             {/* Notification Settings */}
-            <TouchableOpacity 
-            onPress={()=>{navigation.navigate('Notification')}}
-            style={{ marginTop: moderateScaleVertical(12) }}>
+            <TouchableOpacity
+              onPress={() => { navigation.navigate('Notification') }}
+              style={{ marginTop: moderateScaleVertical(12) }}>
               <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
                 <Text style={{ fontSize: 18, color: 'black', fontWeight: '500' }}>Notification Settings </Text>
                 <Image
@@ -84,9 +84,9 @@ const Profile = () => {
 
 
             {/* Reset Password */}
-            <TouchableOpacity 
-            onPress={()=>{navigation.navigate('ResetPassword')}}
-            style={{ marginTop: moderateScaleVertical(12) }}>
+            <TouchableOpacity
+              onPress={() => { navigation.navigate('ResetPassword') }}
+              style={{ marginTop: moderateScaleVertical(12) }}>
               <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
                 <Text style={{ fontSize: 18, color: 'black', fontWeight: '500' }}>Reset Password </Text>
                 <Image
@@ -103,9 +103,9 @@ const Profile = () => {
 
 
             {/* Share Feedback */}
-            <TouchableOpacity 
-            onPress={()=>{navigation.navigate('ShareFeedBack')}}
-            style={{ marginTop: moderateScaleVertical(12) }}>
+            <TouchableOpacity
+              onPress={() => { navigation.navigate('ShareFeedBack') }}
+              style={{ marginTop: moderateScaleVertical(12) }}>
               <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
                 <Text style={{ fontSize: 18, color: 'black', fontWeight: '500' }}>Share Feedback </Text>
                 <Image
@@ -136,16 +136,9 @@ const Profile = () => {
                 // backgroundColor: loading ? 'yellow' : 'yellow',
                 backgroundColor: 'orange',
                 borderColor: 'orange',
-                marginTop: moderateScaleVertical(75)
+                marginTop: moderateScaleVertical(125)
 
               }}>
-                {/* {loading ? (
-                          <ActivityIndicator size="small" color="black" />
-                        ) : (
-                          <Text style={{ fontWeight: '600', fontSize: 21, color: 'black' }}>
-                            Login
-                          </Text>
-                        )} */}
                 <Text style={{ fontWeight: '400', fontSize: 19, color: 'white', letterSpacing: 2 }}>
                   LOGOUT
                 </Text>
