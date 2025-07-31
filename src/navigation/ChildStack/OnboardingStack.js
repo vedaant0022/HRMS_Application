@@ -13,7 +13,7 @@ export function OnboardingStack() {
             screenOptions={{
                 headerShown: false
             }}
-            initialRouteName="Getstarted"
+            initialRouteName="Splash"
         >
             <Onboarding.Screen name="Splash" component={Splash} />
             <Onboarding.Screen name="Getstarted" component={Getstarted} />

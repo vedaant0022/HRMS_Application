@@ -6,7 +6,7 @@ import { useNavigation } from '@react-navigation/native'
 const Splash = () => {
   const navigation = useNavigation()
   setTimeout(() => {
-    navigation.navigate('Login')
+    navigation.navigate('Getstarted')
   }, 3000);
   return (
     <SafeAreaView style={{flex:1,backgroundColor:'#fff'}}>
