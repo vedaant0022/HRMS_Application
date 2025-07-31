@@ -4,6 +4,7 @@ import { createStackNavigator } from '@react-navigation/stack'
 import Splash from '../../screens/Onboarding/StackScreens/Splash'
 import Login from '../../screens/Onboarding/StackScreens/Login';
 import OTP from '../../screens/Onboarding/StackScreens/OTP';
+import Getstarted from '../../screens/Onboarding/StackScreens/Getstarted';
 
 const Onboarding = createStackNavigator();
 export function OnboardingStack() {
@@ -12,9 +13,10 @@ export function OnboardingStack() {
             screenOptions={{
                 headerShown: false
             }}
-            initialRouteName="Login"
+            initialRouteName="Getstarted"
         >
             <Onboarding.Screen name="Splash" component={Splash} />
+            <Onboarding.Screen name="Getstarted" component={Getstarted} />
             <Onboarding.Screen name="Login" component={Login} />
             <Onboarding.Screen name="OTP" component={OTP} />
         </Onboarding.Navigator>
