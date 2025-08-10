@@ -39,13 +39,13 @@ const Getstarted = () => {
                             borderRadius: 25,
                         }}
                     >
-                        <View style={{backgroundColor:'#fff',width:moderateScale(50),height:moderateScaleVertical(50),alignItems:'center',justifyContent:'center',borderRadius:25,}}>
+                        {/* <View style={{backgroundColor:'#fff',width:moderateScale(50),height:moderateScaleVertical(50),alignItems:'center',justifyContent:'center',borderRadius:25,}}>
                             <Image
                                 source={{ uri: 'https://cdn-icons-png.flaticon.com/512/271/271226.png' }}
                                 style={{ height: moderateScaleVertical(40), width: moderateScale(40), resizeMode: 'center' }}
                                 tintColor='#000'
                             />
-                        </View>
+                        </View> */}
                     </TouchableOpacity>
                 </View>
 
@@ -69,7 +69,7 @@ const Getstarted = () => {
                             position: 'absolute',
                             bottom: 60,
                             alignSelf: 'center',
-                            backgroundColor: 'rgba(0,0,0,0.5)',
+                            backgroundColor: '#fff',
                             paddingVertical: 12,
                             paddingHorizontal: 25,
                             borderRadius: 25,
@@ -78,10 +78,10 @@ const Getstarted = () => {
                             gap: 10
                         }}
                     >
-                        <Text style={{ color: '#fff', fontSize: 20, fontWeight: '600' }}>Get Started</Text>
+                        <Text style={{ color: '#000000', fontSize: 20, fontWeight: '600' }}>Get Started</Text>
                         <Image
                             source={{ uri: 'https://cdn-icons-png.flaticon.com/512/1549/1549454.png' }}
-                            style={{ width: 24, height: 24, tintColor: '#fff' }}
+                            style={{ width: 24, height: 24, tintColor: '#000000' }}
                         />
                     </TouchableOpacity>
                 </View>

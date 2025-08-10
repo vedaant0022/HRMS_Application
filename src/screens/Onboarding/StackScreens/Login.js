@@ -73,7 +73,9 @@ const Login = () => {
         </View>
         {/* Forgot Password */}
         <View style={{ alignContent: 'flex-end', alignItems: 'flex-end' }}>
-          <TouchableOpacity>
+          <TouchableOpacity
+          onPress={()=>{navigation.navigate('Email')}}
+          >
             <View style={{ marginTop: moderateScale(12) }}>
               <Text style={{ color: 'orange', fontWeight: '400', fontSize: 16, }} >Forgot Password?</Text>
             </View>
@@ -116,8 +118,6 @@ const Login = () => {
           <View style={{ marginTop: moderateScale(120) }}>
             <Text style={{ fontWeight: '400', fontSize: 16, color: '#2C2C2C' }}>© 2025 EaseEmployee. All rights reserved.</Text>
           </View>
-
-
         </View>
 
 
