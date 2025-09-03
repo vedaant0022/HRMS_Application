@@ -1,10 +1,14 @@
 import { View, Text, SafeAreaView, Image, TouchableOpacity, ScrollView } from 'react-native'
-import React from 'react'
+import React, { useState } from 'react'
 import { moderateScale, moderateScaleVertical } from '../../../styles/Responsiveness/responsiveSize'
 import { useNavigation } from '@react-navigation/native'
+import useUserStore from '../../../zustand/Store/useUserStore'
 
 const Profile = () => {
-  const navigation = useNavigation()
+  const navigation = useNavigation();
+  const user = useUserStore((state) => state.user);
+
+
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
       <ScrollView scrollEnabled style={{ flex: 1 }}>
@@ -20,9 +24,9 @@ const Profile = () => {
               }}
             />
             <View style={{ alignItems: 'center', marginTop: moderateScaleVertical(8) }}>
-              <Text style={{ color: 'black', fontWeight: '600', fontSize: 22 }}>John Doe</Text>
-              <Text style={{ color: '#898889', fontWeight: '600', fontSize: 17 }}>john.doe@gmail.com</Text>
-              <Text style={{ color: '#898889', fontWeight: '600', fontSize: 17 }}>Software Developer</Text>
+              <Text style={{ color: 'black', fontWeight: '600', fontSize: 22 }}>{user.User.personalDetails.firstName} {user.User.personalDetails.lastName}</Text>
+              <Text style={{ color: '#898889', fontWeight: '600', fontSize: 17 }}>{user.User.email}</Text>
+              <Text style={{ color: '#898889', fontWeight: '600', fontSize: 17 }}>{user.User.jobDetails.designation}</Text>
             </View>
           </View>
 

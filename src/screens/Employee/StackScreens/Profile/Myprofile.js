@@ -4,6 +4,7 @@ import { moderateScale, moderateScaleVertical } from '../../../../styles/Respons
 import EmpHeader from '../../../../components/Employee/Header/EmpHeader'
 import { useNavigation } from '@react-navigation/native'
 import ImagePickerfrom, { launchImageLibrary } from 'react-native-image-picker';
+import useUserStore from '../../../../zustand/Store/useUserStore'
 
 
 const Myprofile = () => {
@@ -11,6 +12,8 @@ const Myprofile = () => {
 
   const [modal, setModal] = useState(false);
   const [photo, setphoto] = useState('');
+
+  const user = useUserStore((state) => state.user);
 
   const picker = async () => {
     try {

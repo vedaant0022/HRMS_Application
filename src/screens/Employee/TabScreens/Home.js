@@ -1,13 +1,18 @@
 import { View, Text, SafeAreaView, TouchableOpacity } from 'react-native'
-import React from 'react'
+import React, { useEffect } from 'react'
 import { moderateScale, moderateScaleVertical } from '../../../styles/Responsiveness/responsiveSize'
 import EmpHeader from '../../../components/Employee/Header/EmpHeader'
 import Map from '../../../components/Employee/Map/Map'
 import moment from 'moment'
+import AsyncStorage from '@react-native-async-storage/async-storage'
+import { errorMessage } from '../../../utils'
+import axios from 'axios'
+import { base_url } from '../../../utils/url'
+import useUserStore from '../../../zustand/Store/useUserStore'
 
 const Home = () => {
 
-  const todayFormatted = moment().format('Do MMMM YYYY');
+
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
       <View style={{ flex: 1 }}>

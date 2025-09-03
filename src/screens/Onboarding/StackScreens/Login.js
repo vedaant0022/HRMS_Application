@@ -2,7 +2,11 @@ import { View, Text, SafeAreaView, Image, TextInput, TouchableOpacity } from 're
 import React, { useState } from 'react'
 import { moderateScale, moderateScaleVertical } from '../../../styles/Responsiveness/responsiveSize'
 import { useNavigation } from '@react-navigation/native'
-import { errorMessage } from '../../../utils'
+import { errorMessage, successMessage } from '../../../utils'
+import axios from 'axios'
+import { base_url } from '../../../utils/url'
+import AsyncStorage from '@react-native-async-storage/async-storage'
+
 
 const Login = () => {
   const navigation = useNavigation();
@@ -15,13 +19,40 @@ const Login = () => {
     return regex.test(email);
   }
 
-  const submit = () => {
+  const submit = async () => {
     if (!email || !isValidEmail(email)) {
       errorMessage("Error, Please Enter a Valid Email");
-    } else if (!password) {
+      return;
+    }
+    if (!password) {
       errorMessage("Error, Please Enter a Valid Password");
-    } else {
-      navigation.navigate('OTP');
+      return;
+    }
+    const body = {
+      email: email,
+      password: password,
+    };
+    const url = `${base_url}/users/login`;     
+    try {
+      const response = await axios.post(url, body);
+      if (response.status === 200) {
+        successMessage(response.data.message);
+        const token = response.data.token;
+        await AsyncStorage.setItem('access_token', token);
+        navigation.navigate('Employee');
+      }
+    } catch (error) {
+      if (error.response) {
+        const status = error.response.status;
+        const message = error.response.data.message;
+        if (status === 404 || status === 401) {
+          errorMessage(message);
+        } else {
+          errorMessage(message || "An unexpected error occurred.");
+        }
+      } else {
+        errorMessage("Please Contact Admin! Or check your network connection.");
+      }
     }
   };
 
@@ -29,12 +60,12 @@ const Login = () => {
     <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
       <View style={{ marginLeft: moderateScale(20), marginRight: moderateScale(20), marginTop: moderateScaleVertical(25) }}>
         {/* Button */}
-        <View>
+        {/* <View>
           <Image
             source={{ uri: 'https://cdn-icons-png.flaticon.com/512/1828/1828778.png' }}
             style={{ height: moderateScaleVertical(20), width: moderateScale(20) }}
           />
-        </View>
+        </View> */}
         {/* Title */}
         <View style={{ marginTop: moderateScaleVertical(120), alignItems: 'center' }}>
           <Text style={{ fontSize: 25, fontWeight: '500', letterSpacing: 2 }}>Login to <Text style={{ color: 'orange' }}>EaseEmployee</Text></Text>

@@ -34,7 +34,8 @@
     "react-native-screens": "^4.10.0",
     "react-native-select-dropdown": "^4.0.1",
     "react-native-swiper": "^1.6.0",
-    "react-native-vector-icons": "^10.2.0"
+    "react-native-vector-icons": "^10.2.0",
+    "zustand": "^5.0.8"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",

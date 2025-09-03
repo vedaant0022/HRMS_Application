@@ -4,6 +4,10 @@ import EmpHeader from '../../../../components/Employee/Header/EmpHeader'
 import { moderateScale, moderateScaleVertical } from '../../../../styles/Responsiveness/responsiveSize'
 import { errorMessage } from '../../../../utils'
 import { useNavigation } from '@react-navigation/native'
+import axios from 'axios'
+import { base_url } from '../../../../utils/url'
+import useUserStore from '../../../../zustand/Store/useUserStore'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 const ResetPassword = () => {
 
@@ -18,13 +22,38 @@ const ResetPassword = () => {
         setshowpass(!showpass)
     }
 
-    const submit = () => {
+    const user = useUserStore((state) => state.user);
+
+    const submit = async () => {
         if (!current || !newpassword || !confirm) {
             errorMessage('Error, Please Enter All Fields')
+        };
+        if (current == newpassword) {
+            errorMessage("New Password and Old Password are same");
         }
-        else {
-            navigation.navigate('EmployeeTab')
+        if (newpassword != confirm) {
+            errorMessage("Enter Confirm New Password Properly");
         }
+        const token = await AsyncStorage.getItem('access_token');
+        console.log("RECEIVED TOKEN>>", token)
+        const id = user.User._id
+        // console.log("Received ID >>>", id)
+        const body = {
+            userId: id,
+            oldPassword: current,
+            password: newpassword,
+            confirmpassword: confirm
+        }
+        console.log("BODY SENT >>", body)
+        const url = `${base_url}/api/users/change-password`
+        const response = await axios.put(url, body, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        })
+
+        console.log(response.data.status);
+
 
 
     }
@@ -35,7 +64,7 @@ const ResetPassword = () => {
                     {/* Header */}
                     <View style={{ marginTop: moderateScaleVertical(1) }}>
                         <EmpHeader
-                        name="Reset Password"
+                            name="Reset Password"
                         />
                     </View>
 

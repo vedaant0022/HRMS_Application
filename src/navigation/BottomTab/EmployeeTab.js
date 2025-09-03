@@ -1,5 +1,5 @@
 import { View, Text, Image, SafeAreaView, TouchableOpacity } from 'react-native'
-import React from 'react'
+import React, { useEffect } from 'react'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Home from '../../screens/Employee/TabScreens/Home';
 import Attendance from '../../screens/Employee/TabScreens/Attendance';
@@ -7,9 +7,12 @@ import Finance from '../../screens/Employee/TabScreens/Finance';
 import Leaves from '../../screens/Employee/TabScreens/Leaves';
 import Profile from '../../screens/Employee/TabScreens/Profile';
 import { moderateScale, moderateScaleVertical } from '../../styles/Responsiveness/responsiveSize';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import useUserStore from '../../zustand/Store/useUserStore';
 
 const EmployeeTab = () => {
   const Tab = createBottomTabNavigator();
+  const user = useUserStore((state) => state.user);
 
   const EmpHeader = () => {
     return (
@@ -27,7 +30,7 @@ const EmployeeTab = () => {
               }}
             />
             <View>
-              <Text style={{ fontSize: 16, fontWeight: '600', color: '#000' }}>John Doe</Text>
+              <Text style={{ fontSize: 16, fontWeight: '600', color: '#000' }}>{user.User.personalDetails.firstName} {user.User.personalDetails.lastName}</Text>
               <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                 <Text style={{ color: 'green', fontSize: 16 }}>●</Text>
                 <Text style={{ fontSize: 14, color: '#555', marginLeft: 4 }}>Online</Text>
