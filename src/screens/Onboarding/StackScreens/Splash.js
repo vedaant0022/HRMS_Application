@@ -39,16 +39,18 @@ const Splash = () => {
   };
   
   useEffect(() => {
-    getDetails();
+    
   }, []);
   setTimeout(async () => {
     const token = await AsyncStorage.getItem('access_token');
     if (!token) {
       navigation.navigate('Getstarted');
+      
     } else {
+      getDetails();
       navigation.navigate('Employee');
       successMessage('Welcome back!');
-      // console.log("Token Received>>",token)
+      console.log("Token Received>>",token)
     }
     // navigation.navigate('Getstarted');
 

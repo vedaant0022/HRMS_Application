@@ -2,7 +2,7 @@ import { View, Text, SafeAreaView, TextInput, TouchableOpacity, Image } from 're
 import React, { useState } from 'react'
 import EmpHeader from '../../../../components/Employee/Header/EmpHeader'
 import { moderateScale, moderateScaleVertical } from '../../../../styles/Responsiveness/responsiveSize'
-import { errorMessage } from '../../../../utils'
+import { errorMessage, successMessage } from '../../../../utils'
 import { useNavigation } from '@react-navigation/native'
 import axios from 'axios'
 import { base_url } from '../../../../utils/url'
@@ -25,38 +25,50 @@ const ResetPassword = () => {
     const user = useUserStore((state) => state.user);
 
     const submit = async () => {
-        if (!current || !newpassword || !confirm) {
-            errorMessage('Error, Please Enter All Fields')
-        };
-        if (current == newpassword) {
-            errorMessage("New Password and Old Password are same");
+        try {
+            if (!current || !newpassword || !confirm) {
+                return errorMessage('Error, Please Enter All Fields');
+            }
+            if (current === newpassword) {
+                return errorMessage("New Password and Old Password are same");
+            }
+            if (newpassword !== confirm) {
+                return errorMessage("Enter Confirm New Password Properly");
+            }
+    
+            const token = await AsyncStorage.getItem('access_token');
+            const id = user.User._id;
+            const body = {
+                userId: id,
+                oldPassword: current,
+                password: newpassword,
+                confirmpassword: confirm
+            };
+    
+            const url = `${base_url}/users/change-password`;
+            const response = await axios.put(url, body, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+    
+            // 👇 log status first
+            console.log("Response Status:", response.status);
+    
+            if (response.status === 200) {
+                successMessage(response.data.message);
+                navigation.goBack();
+            }
+        } catch (error) {
+            if (error.response && error.response.data && error.response.data.message) {
+                errorMessage(error.response.data.message);
+            } else {
+                errorMessage("Something went wrong. Please try again.");
+            }
         }
-        if (newpassword != confirm) {
-            errorMessage("Enter Confirm New Password Properly");
-        }
-        const token = await AsyncStorage.getItem('access_token');
-        console.log("RECEIVED TOKEN>>", token)
-        const id = user.User._id
-        // console.log("Received ID >>>", id)
-        const body = {
-            userId: id,
-            oldPassword: current,
-            password: newpassword,
-            confirmpassword: confirm
-        }
-        console.log("BODY SENT >>", body)
-        const url = `${base_url}/api/users/change-password`
-        const response = await axios.put(url, body, {
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
-        })
-
-        console.log(response.data.status);
+    };
 
 
-
-    }
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
             <View style={{ flex: 1 }}>

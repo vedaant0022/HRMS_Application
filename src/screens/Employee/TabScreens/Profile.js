@@ -3,10 +3,22 @@ import React, { useState } from 'react'
 import { moderateScale, moderateScaleVertical } from '../../../styles/Responsiveness/responsiveSize'
 import { useNavigation } from '@react-navigation/native'
 import useUserStore from '../../../zustand/Store/useUserStore'
+import AsyncStorage from '@react-native-async-storage/async-storage'
+import { errorMessage, successMessage } from '../../../utils'
 
 const Profile = () => {
   const navigation = useNavigation();
   const user = useUserStore((state) => state.user);
+
+  const logout = async()=> {
+    const token = await AsyncStorage.removeItem('access_token');
+    if(token){
+      errorMessage("Failed to Logout Please Try Later")
+    }else{
+      successMessage("Sucessfully ")
+      navigation.navigate("Onboarding")
+    }
+  }
 
 
   return (
@@ -129,7 +141,7 @@ const Profile = () => {
           <View style={{ width: '93%', alignSelf: 'center' }}>
             <TouchableOpacity
             // disabled={loading}
-            // onPress={submit}
+            onPress={logout}
             >
               <View style={{
                 borderWidth: 1,

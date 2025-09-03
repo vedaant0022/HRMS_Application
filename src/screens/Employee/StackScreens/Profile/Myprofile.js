@@ -95,6 +95,8 @@ const Myprofile = () => {
     </Modal>
   );
 
+
+
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
       <ScrollView
@@ -131,12 +133,13 @@ const Myprofile = () => {
                 </View>
                 <View style={{ height: moderateScale(50), borderWidth: 1, borderRadius: 10, marginTop: moderateScale(8), backgroundColor: '#f6f7f6', borderColor: '#f6f7f6', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
                   <TextInput
-                    // value={current}
+                    value={user.User.personalDetails.firstName} 
                     // onChangeText={(text) => setcurrent(text)}
                     placeholder='John Dow'
                     placeholderTextColor={'#c6c6c7'}
                     // secureTextEntry={showpass}
                     style={{ fontSize: 16, color: '#000', margin: 5 }}
+                    editable={false}
                   />
                 </View>
               </View>
@@ -147,12 +150,13 @@ const Myprofile = () => {
                 </View>
                 <View style={{ height: moderateScale(50), borderWidth: 1, borderRadius: 10, marginTop: moderateScale(8), backgroundColor: '#f6f7f6', borderColor: '#f6f7f6', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
                   <TextInput
-                    // value={current}
+                    value={user.User.email}
                     // onChangeText={(text) => setcurrent(text)}
                     placeholder='John.dow@gmail.com'
                     placeholderTextColor={'#c6c6c7'}
                     // secureTextEntry={showpass}
                     style={{ fontSize: 16, color: '#000', margin: 5 }}
+                    editable={false}
                   />
                 </View>
               </View>
@@ -163,12 +167,13 @@ const Myprofile = () => {
                 </View>
                 <View style={{ height: moderateScale(50), borderWidth: 1, borderRadius: 10, marginTop: moderateScale(8), backgroundColor: '#f6f7f6', borderColor: '#f6f7f6', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
                   <TextInput
-                    // value={current}
+                    value={user.User.personalDetails.phone} 
                     // onChangeText={(text) => setcurrent(text)}
                     placeholder='9898989898'
                     placeholderTextColor={'#c6c6c7'}
                     // secureTextEntry={showpass}
                     style={{ fontSize: 16, color: '#000', margin: 5 }}
+                    editable={false}
                   />
                 </View>
               </View>
@@ -179,12 +184,13 @@ const Myprofile = () => {
                 </View>
                 <View style={{ height: moderateScale(50), borderWidth: 1, borderRadius: 10, marginTop: moderateScale(8), backgroundColor: '#f6f7f6', borderColor: '#f6f7f6', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
                   <TextInput
-                    // value={current}
+                    value={user.User.jobDetails.designation} 
                     // onChangeText={(text) => setcurrent(text)}
                     placeholder='Software Developer'
                     placeholderTextColor={'#c6c6c7'}
                     // secureTextEntry={showpass}
                     style={{ fontSize: 16, color: '#000', margin: 5 }}
+                    editable={false}
                   />
                 </View>
               </View>
@@ -201,6 +207,7 @@ const Myprofile = () => {
                     placeholderTextColor={'#c6c6c7'}
                     // secureTextEntry={showpass}
                     style={{ fontSize: 16, color: '#000', margin: 5 }}
+                    editable={false}
                   />
                 </View>
               </View>
