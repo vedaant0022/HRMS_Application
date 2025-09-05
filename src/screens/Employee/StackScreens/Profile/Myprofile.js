@@ -201,7 +201,7 @@ const Myprofile = () => {
                 </View>
                 <View style={{ height: moderateScale(50), borderWidth: 1, borderRadius: 10, marginTop: moderateScale(8), backgroundColor: '#f6f7f6', borderColor: '#f6f7f6', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
                   <TextInput
-                    // value={current}
+                    value={user.User.jobDetails.Salary}
                     // onChangeText={(text) => setcurrent(text)}
                     placeholder='1.20LPA'
                     placeholderTextColor={'#c6c6c7'}

@@ -4,7 +4,11 @@ import { moderateScale, moderateScaleVertical } from '../../../../styles/Respons
 import EmpHeader from '../../../../components/Employee/Header/EmpHeader'
 import { Button } from 'react-native-paper'
 import { useNavigation } from '@react-navigation/native'
-import { errorMessage } from '../../../../utils'
+import { errorMessage, successMessage } from '../../../../utils'
+import axios from 'axios'
+import { base_url } from '../../../../utils/api'
+import useUserStore from '../../../../zustand/Store/useUserStore'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 
 const Feedback = () => {
@@ -12,15 +16,65 @@ const Feedback = () => {
 
   const [feedback, setfeedback] = useState('')
 
-  const submit = () => {
-    if (feedback.length == 0 || !feedback) {
-      errorMessage('Please Enter Feedback')
+  const submit = async () => {
+    try {
+      if (!feedback || feedback.trim().length === 0) {
+        errorMessage("Please Enter Feedback");
+        return;
+      }
+  
+      // ✅ Get user directly from Zustand state
+      const user = useUserStore.getState().user;
+  
+      if (!user) {
+        errorMessage("User not found, please login again");
+        return;
+      }
+  
+      const token = await AsyncStorage.getItem("access_token");
+      if (!token) {
+        errorMessage("Unauthorized Access");
+        return;
+      }
+  
+      const id = user?.User?._id; // safe access
+      if (!id) {
+        errorMessage("Invalid user data");
+        return;
+      }
+  
+      const body = {
+        employeeId: id,
+        feedback: feedback,
+      };
+  
+      const url = `${base_url}/feedback/addfeedback`;
+      console.log("API HIT >>", url);
+      console.log("BODY >>", body);
+  
+      const response = await axios.post(url, body, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+  
+      console.log("Response Status:", response.data);
+  
+      if (response.status === 201) {
+        successMessage(response.data.message);
+        console.log(response.data.message);
+        navigation.goBack();
+      }
+    } catch (error) {
+      console.error("API ERROR >>", error.response?.data || error.message);
+      if (error.response?.data?.message) {
+        errorMessage(error.response.data.message);
+      } else {
+        errorMessage("Something went wrong. Please try again.");
+      }
     }
-    else {
-      navigation.navigate('EmployeeTab')
+  };
 
-    }
-  }
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
       <View style={{ flex: 1 }}>
