@@ -1,10 +1,15 @@
 import { View, Text, SafeAreaView, Image, TouchableOpacity, LayoutAnimation, UIManager, Platform, ScrollView, Modal, TouchableWithoutFeedback, TextInput } from 'react-native';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { moderateScale, moderateScaleVertical } from '../../../styles/Responsiveness/responsiveSize';
 import { Calendar, CalendarList, Agenda } from 'react-native-calendars';
 import ButtonComponent from '../../../components/Button/Button';
 import { errorMessage, successMessage } from '../../../utils';
 import Dropdown from '../../../components/Dropdown/Dropdown';
+import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { base_url } from '../../../utils/url';
+import useUserStore from '../../../zustand/Store/useUserStore';
+import { useNavigation } from '@react-navigation/native';
 
 
 
@@ -13,6 +18,10 @@ if (Platform.OS === 'android') {
 }
 
 const Leaves = () => {
+
+
+  const navigation = useNavigation();
+
   const [selectedTab, setSelectedTab] = useState('Pending');
   const [modal, setModal] = useState(false);
   const [reason, setreason] = useState('')
@@ -24,6 +33,9 @@ const Leaves = () => {
   const [selectedOption, setSelectedOption] = useState('');
 
   const data = ['Sick', 'Causal', 'Paid', 'Other'];
+
+  const user = useUserStore.getState().user;
+  const token = AsyncStorage.getItem("access_token");
 
   const handleSelectionChange = (value) => {
     setSelectedOption(value); // Update the selected option
@@ -95,11 +107,126 @@ const Leaves = () => {
     setSelectedOption('');
   }
 
-  const submitLeave = () => {
-    if (!reason || !startDate || !endDate || !selectedOption) {
-      errorMessage("Please Enter all fields")
+  const getLeaves = async () => {
+    try {
+      // ✅ Always fetch token fresh from AsyncStorage
+      const token = await AsyncStorage.getItem("access_token");
+
+      if (!token) {
+        errorMessage("Unauthorized Access - No token found");
+        return;
+      }
+
+      // ✅ Get user from Zustand
+      const user = useUserStore.getState().user;
+      const id = user?.User?._id;
+
+      if (!id) {
+        errorMessage("Invalid user data - employeeId missing");
+        return;
+      }
+
+      const body = { employeeId: id };
+      const url = `${base_url}/leaves/getleaves`;
+
+      console.log("API HIT >>", url);
+      console.log("BODY >>", body);
+      console.log("Token >>", token);
+
+      const response = await axios.post(url, body, {
+        headers: {
+          Authorization: `Bearer ${token}`, // ✅ Correct format
+        },
+      });
+
+      console.log("Response Status:", response.status);
+      console.log("Response Data >>>", response.data);
+
+      if (response.status >= 200 && response.status < 300) {
+        successMessage(response.data?.message || "Leaves fetched successfully");
+        return response.data; // ✅ return so caller can use
+      }
+    } catch (error) {
+      console.error("API ERROR >>", error.response?.data || error.message);
+
+      if (error.response?.data?.message) {
+        errorMessage(error.response.data.message);
+      } else {
+        errorMessage("Something went wrong. Please try again.");
+      }
     }
   };
+
+  useEffect(() => {
+    getLeaves()
+  }, []);
+
+
+
+  const submitLeave = async () => {
+    try {
+      // ✅ Fetch token fresh from storage
+      const token = await AsyncStorage.getItem("access_token");
+
+      const user = useUserStore.getState().user;
+      const id = user?.User?._id;
+
+      // ✅ Validate fields
+      if (!reason || !startDate || !endDate || !selectedOption) {
+        errorMessage("Please enter all fields");
+        return;
+      }
+      if (!token) {
+        errorMessage("Unauthorized Access");
+        return;
+      }
+      if (!id) {
+        errorMessage("Invalid user data");
+        return;
+      }
+
+      const body = {
+        employeeId: id,
+        leaveType: selectedOption,
+        startDate,
+        endDate,
+        reason,
+      };
+
+      const url = `${base_url}/leaves/apply`;
+
+      console.log("API HIT >>", url);
+      console.log("BODY >>", body);
+
+      const response = await axios.post(url, body, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      console.log("Response Status:", response.status);
+      console.log("Response Data >>>", response.data);
+
+      if (response.status === 200 || response.status === 201) {
+        successMessage(response.data?.message || "Leave applied successfully");
+        console.log(response.data?.message || "Leave applied successfully");
+        setModal(false); // close modal
+        return response.data;
+      }
+    } catch (error) {
+      console.error("API ERROR >>", error.response?.data || error.message);
+
+      if (error.response?.data?.message) {
+        errorMessage(error.response.data.message);
+      } else {
+        errorMessage("Something went wrong. Please try again.");
+      }
+    }
+  };
+
+
+
+
 
 
   const modalfn = () => (

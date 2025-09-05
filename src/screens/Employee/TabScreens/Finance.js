@@ -6,6 +6,8 @@ import ButtonComponent from '../../../components/Button/Button';
 import { errorMessage, successMessage } from '../../../utils';
 import Dropdown from '../../../components/Dropdown/Dropdown';
 import { launchImageLibrary } from 'react-native-image-picker';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import useUserStore from '../../../zustand/Store/useUserStore';
 
 
 
@@ -130,11 +132,36 @@ const Finance = () => {
     setamount('');
   }
 
-  const submitLeave = () => {
-    if (!description || !amount || !selectedOption) {
-      errorMessage("Please Enter all fields")
-    }else{
-      setModal(!modal)
+  const submitLeave = async () => {
+    try {
+      const token = await AsyncStorage.getItem("access_token");
+
+      const user = useUserStore.getState().user;
+      const id = user?.User?._id;
+
+      if (!description || !amount || !selectedOption || !document) {
+        errorMessage("Please Enter all fields");
+        return;
+      }
+      if (!token) {
+        errorMessage("Unauthorized Access");
+        return;
+      }
+      if (!id) {
+        errorMessage("Invalid user data");
+        return;
+      }
+      const body = {
+        category: selectedOption,
+        amount: amount,
+        description: description,
+        documents: document
+      }
+
+      console.log("BODY SENT >>> ", body);
+
+    } catch (error) {
+
     }
   };
 
