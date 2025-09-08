@@ -1,5 +1,5 @@
 import { View, Text, SafeAreaView, Image, TouchableOpacity, LayoutAnimation, UIManager, Platform, ScrollView, Modal, TouchableWithoutFeedback, TextInput } from 'react-native';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { moderateScale, moderateScaleVertical } from '../../../styles/Responsiveness/responsiveSize';
 import { Calendar, CalendarList, Agenda } from 'react-native-calendars';
 import ButtonComponent from '../../../components/Button/Button';
@@ -8,6 +8,9 @@ import Dropdown from '../../../components/Dropdown/Dropdown';
 import { launchImageLibrary } from 'react-native-image-picker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import useUserStore from '../../../zustand/Store/useUserStore';
+import axios from 'axios';
+import { base_url } from '../../../utils/url';
+
 
 
 
@@ -28,6 +31,7 @@ const Finance = () => {
   const [selectedOption, setSelectedOption] = useState('');
   const [document, setdocument] = useState('');
   const [isImageEnlarged, setIsImageEnlarged] = useState(false);
+
 
   const data = ['Travel', 'Food', 'Office Supplies', 'Medical', 'Others'];
 
@@ -67,6 +71,9 @@ const Finance = () => {
     return markedDates;
   };
 
+
+
+
   const handleTabChange = (tab) => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
     setSelectedTab(tab);
@@ -75,9 +82,7 @@ const Finance = () => {
   const pendingContent = () => {
     return (
       <View>
-        <View>
-          <Text>Pending Finance Approvals</Text>
-        </View>
+       
       </View>
     )
   }
@@ -131,6 +136,45 @@ const Finance = () => {
     setdocument('');
     setamount('');
   }
+
+  const getfinanceRequests = async () => {
+    try {
+      const token = await AsyncStorage.getItem("access_token");
+
+      if (!token) {
+        errorMessage("Unauthorized Access - No token found");
+        return;
+      }
+
+      const url = `${base_url}/reimbursement/listreimbursement`;
+      console.log("API HIT >>", url);
+      const response = await axios.get(url, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      console.log("Response Status:", response.status);
+      console.log("Response Data >>>", response.data.reimbursements);
+
+      if (response.status >= 200 && response.status < 300) {
+        successMessage(response.data?.message || "Reimbursement fetched successfully");
+        return response.data;
+      }
+    } catch (error) {
+      console.error("API ERROR >>", error.response?.data || error.message);
+
+      if (error.response?.data?.message) {
+        errorMessage(error.response.data.message);
+      } else {
+        errorMessage("Something went wrong. Please try again.");
+      }
+    }
+  };
+
+  useEffect(() => {
+    getfinanceRequests();
+  }, [])
 
   const submitLeave = async () => {
     try {
