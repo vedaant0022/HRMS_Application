@@ -12,8 +12,6 @@ import axios from 'axios';
 import { base_url } from '../../../utils/url';
 
 
-
-
 if (Platform.OS === 'android') {
   UIManager.setLayoutAnimationEnabledExperimental && UIManager.setLayoutAnimationEnabledExperimental(true);
 }
@@ -82,7 +80,9 @@ const Finance = () => {
   const pendingContent = () => {
     return (
       <View>
-       
+        <View>
+          <Text>Hello</Text>
+        </View>
       </View>
     )
   }
