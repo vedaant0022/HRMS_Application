@@ -1,4 +1,4 @@
-import { View, Text, SafeAreaView, Image, TouchableOpacity, LayoutAnimation, UIManager, Platform, ScrollView, Modal, TouchableWithoutFeedback, TextInput } from 'react-native';
+import { View, Text, SafeAreaView, Image, TouchableOpacity, LayoutAnimation, UIManager, Platform, ScrollView, Modal, TouchableWithoutFeedback, TextInput, Linking } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import { moderateScale, moderateScaleVertical } from '../../../styles/Responsiveness/responsiveSize';
 import { Calendar, CalendarList, Agenda } from 'react-native-calendars';
@@ -29,6 +29,7 @@ const Finance = () => {
   const [selectedOption, setSelectedOption] = useState('');
   const [document, setdocument] = useState('');
   const [isImageEnlarged, setIsImageEnlarged] = useState(false);
+  const [finance, setfinance] = useState('');
 
 
   const data = ['Travel', 'Food', 'Office Supplies', 'Medical', 'Others'];
@@ -77,24 +78,185 @@ const Finance = () => {
     setSelectedTab(tab);
   };
 
+  // const pendingContent = () => {
+  //   return (
+  //     <View>
+  //       <View>
+  //         <Text>Hello</Text>
+  //       </View>
+  //     </View>
+  //   )
+  // }
   const pendingContent = () => {
     return (
-      <View>
-        <View>
-          <Text>Hello</Text>
-        </View>
+      <View style={{ flex: 1 }}>
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={{ paddingBottom: 20 }}
+        >
+          {Array.isArray(finance) && finance.length > 0 ? (
+            finance.map((item, index) => {
+              if (
+                item.status?.toLowerCase() === "pending" ||
+                item.status?.toLowerCase() === "rejected"
+              ) {
+                return (
+                  <View
+                    key={index}
+                    style={{
+                      borderWidth: 1,
+                      borderRadius: 12,
+                      marginBottom: 10,
+                      padding: 20,
+                    }}
+                  >
+                    <Text>Status: {item.status}</Text>
+                    <Text>Category: {item.category}</Text>
+                    <Text>Amount: ₹{item.amount}</Text>
+
+                    <Text>
+                      Submitted At:{" "}
+                      {new Date(item.submittedAt).toLocaleDateString("en-GB", {
+                        day: "2-digit",
+                        month: "short",
+                        year: "numeric",
+                      })}
+                    </Text>
+
+                    <Text>Description: {item.description}</Text>
+
+                    {/* Show Documents if available */}
+                    {item.documents && item.documents.length > 0 && (
+                      <View style={{ marginTop: 10 }}>
+                        <Text>Documents:</Text>
+                        {item.documents.map((doc, docIndex) => (
+                          <TouchableOpacity
+                            key={docIndex}
+                            onPress={() => Linking.openURL(doc.url)}
+                          >
+                            <Text
+                              style={{
+                                color: "blue",
+                                textDecorationLine: "underline",
+                                marginVertical: 2,
+                              }}
+                            >
+                              View Document {docIndex + 1}
+                            </Text>
+                          </TouchableOpacity>
+                        ))}
+                      </View>
+                    )}
+                  </View>
+                );
+              }
+              return null;
+            })
+          ) : (
+            <Text style={{ textAlign: "center", marginTop: 20 }}>
+              No pending or rejected finance
+            </Text>
+          )}
+        </ScrollView>
       </View>
-    )
-  }
+    );
+  };
+
+  // const approvedcontent = () => {
+  //   return (
+  //     <View>
+  //       <View>
+  //         <Text>Finance Approved</Text>
+  //       </View>
+  //     </View>
+  //   )
+  // }
+
   const approvedcontent = () => {
     return (
-      <View>
-        <View>
-          <Text>Finance Approved</Text>
-        </View>
+      <View style={{ flex: 1 }}>
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={{ paddingBottom: 20 }}
+        >
+          {Array.isArray(finance) && finance.length > 0 ? (
+            finance
+              .filter((item) => item.status?.toLowerCase() === "approved")
+              .map((item, index) => (
+                <View
+                  key={index}
+                  style={{
+                    borderWidth: 1,
+                    borderRadius: 12,
+                    marginBottom: 10,
+                    padding: 20,
+                  }}
+                >
+                  <Text>Status: {item.status}</Text>
+                  <Text>Category: {item.category}</Text>
+                  <Text>Amount: ₹{item.amount}</Text>
+                  <Text>Description: {item.description}</Text>
+                  <Text>Employee ID: {item.employeeId}</Text>
+
+                  <Text>
+                    Submitted At:{" "}
+                    {new Date(item.submittedAt).toLocaleDateString("en-GB", {
+                      day: "2-digit",
+                      month: "short",
+                      year: "numeric",
+                    })}
+                  </Text>
+
+                  <Text>
+                    Updated At:{" "}
+                    {new Date(item.updatedAt).toLocaleDateString("en-GB", {
+                      day: "2-digit",
+                      month: "short",
+                      year: "numeric",
+                    })}
+                  </Text>
+
+                  {/* Documents */}
+                  {item.documents && item.documents.length > 0 && (
+                    <View style={{ marginTop: 10 }}>
+                      <Text>Documents:</Text>
+                      {item.documents.map((doc, docIndex) => (
+                        <View key={docIndex} style={{ marginVertical: 5 }}>
+                          <TouchableOpacity
+                            onPress={() => Linking.openURL(doc.url)}
+                          >
+                            <Text
+                              style={{
+                                color: "blue",
+                                textDecorationLine: "underline",
+                              }}
+                            >
+                              View Document {docIndex + 1}
+                            </Text>
+                          </TouchableOpacity>
+                          <Text>
+                            Uploaded At:{" "}
+                            {new Date(doc.uploadedAt).toLocaleDateString("en-GB", {
+                              day: "2-digit",
+                              month: "short",
+                              year: "numeric",
+                            })}
+                          </Text>
+                        </View>
+                      ))}
+                    </View>
+                  )}
+                </View>
+              ))
+          ) : (
+            <Text style={{ textAlign: "center", marginTop: 20 }}>
+              No approved finance
+            </Text>
+          )}
+        </ScrollView>
       </View>
-    )
-  }
+    );
+  };
 
   const picker = async () => {
     try {
@@ -125,7 +287,7 @@ const Finance = () => {
   };
 
   const toggleImageEnlarged = () => {
-    setIsImageEnlarged(!isImageEnlarged); 
+    setIsImageEnlarged(!isImageEnlarged);
   };
 
 
@@ -156,6 +318,7 @@ const Finance = () => {
 
       console.log("Response Status:", response.status);
       console.log("Response Data >>>", response.data.reimbursements);
+      setfinance(response.data.reimbursements);
 
       if (response.status >= 200 && response.status < 300) {
         successMessage(response.data?.message || "Reimbursement fetched successfully");
