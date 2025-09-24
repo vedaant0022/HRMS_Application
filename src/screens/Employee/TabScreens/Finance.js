@@ -125,7 +125,7 @@ const Finance = () => {
   };
 
   const toggleImageEnlarged = () => {
-    setIsImageEnlarged(!isImageEnlarged); // Toggle the enlarged view
+    setIsImageEnlarged(!isImageEnlarged); 
   };
 
 
@@ -179,7 +179,6 @@ const Finance = () => {
   const submitLeave = async () => {
     try {
       const token = await AsyncStorage.getItem("access_token");
-
       const user = useUserStore.getState().user;
       const id = user?.User?._id;
 
@@ -195,17 +194,36 @@ const Finance = () => {
         errorMessage("Invalid user data");
         return;
       }
-      const body = {
-        category: selectedOption,
-        amount: amount,
-        description: description,
-        documents: document
-      }
 
-      console.log("BODY SENT >>> ", body);
+      const formData = new FormData();
+      formData.append("category", selectedOption);
+      formData.append("amount", amount);
+      formData.append("description", description);
+      formData.append("documents", {
+        uri: document.uri || document,
+        type: document.type || "image/jpeg",
+        name: document.fileName || "upload.jpg",
+      });
 
+      console.log("FORMDATA SENT >>> ", formData);
+
+      const response = await axios.post(
+        `${base_url}/reimbursement/apply`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      console.log("RESPONSE >>>", response.data);
+      successMessage("Reimbursement submitted successfully");
+      setModal(false)
     } catch (error) {
-
+      console.error("Error submitting reimbursement >>>", error.response?.data || error.message);
+      errorMessage("Failed to submit reimbursement");
     }
   };
 
