@@ -31,11 +31,11 @@ const Leaves = () => {
   const [showEndCalendar, setShowEndCalendar] = useState(false);
   const today = new Date().toISOString().split('T')[0];
   const [selectedOption, setSelectedOption] = useState('');
+  const [leave, setleave] = useState('');
 
   const data = ['Sick', 'Causal', 'Paid', 'Other'];
 
-  const user = useUserStore.getState().user;
-  const token = AsyncStorage.getItem("access_token");
+
 
   const handleSelectionChange = (value) => {
     setSelectedOption(value); // Update the selected option
@@ -80,23 +80,149 @@ const Leaves = () => {
 
   const pendingContent = () => {
     return (
-      <View>
-        <View>
-          <Text>Pending Approvals</Text>
-        </View>
+      <View style={{ flex: 1 }}>
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={{ paddingBottom: 20 }}
+        >
+          {Array.isArray(leave) && leave.length > 0 ? (
+            leave.map((item, index) => {
+              if (item.status?.toLowerCase() === "pending") {
+                return (
+                  <View
+                    key={index}
+                    style={{
+                      borderWidth: 1,
+                      height: 140,
+                      borderRadius: 12,
+                      marginBottom: 10,
+                      padding: 20,
+                    }}
+                  >
+                    <Text>Status: {item.status}</Text>
+                    <Text>Leave Type: {item.leaveType}</Text>
+
+                    <Text>
+                      Start Date:{" "}
+                      {new Date(item.startDate).toLocaleDateString("en-GB", {
+                        day: "2-digit",
+                        month: "short",
+                        year: "numeric",
+                      })}
+                    </Text>
+
+                    <Text>
+                      End Date:{" "}
+                      {new Date(item.endDate).toLocaleDateString("en-GB", {
+                        day: "2-digit",
+                        month: "short",
+                        year: "numeric",
+                      })}
+                    </Text>
+
+                    <Text>
+                      Total Days:{" "}
+                      {(() => {
+                        if (item.startDate && item.endDate) {
+                          const start = new Date(item.startDate);
+                          const end = new Date(item.endDate);
+                          const diffTime = Math.abs(end - start);
+                          const diffDays =
+                            Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
+                          return diffDays;
+                        }
+                        return 0;
+                      })()}
+                    </Text>
+
+                    <Text>Reason: {item.reason}</Text>
+                  </View>
+                );
+              }
+              return null;
+            })
+          ) : (
+            <Text style={{ textAlign: "center", marginTop: 20 }}>
+              No pending leaves
+            </Text>
+          )}
+        </ScrollView>
       </View>
-    )
-  }
+    );
+  };
+
   const approvedcontent = () => {
     return (
-      <View>
-        <View>
-          <Text>Approved</Text>
-        </View>
-      </View>
-    )
-  }
+      <View style={{ flex: 1 }}>
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={{ paddingBottom: 20 }}
+        >
+          {Array.isArray(leave) && leave.length > 0 ? (
+            leave.map((item, index) => {
+              if (item.status?.toLowerCase() === "approved") {
+                return (
+                  <View
+                    key={index}
+                    style={{
+                      borderWidth: 1,
+                      height: 140,
+                      borderRadius: 12,
+                      marginBottom: 10,
+                      padding: 20,
+                    }}
+                  >
+                    <Text>Status: {item.status}</Text>
+                    <Text>Leave Type: {item.leaveType}</Text>
 
+                    <Text>
+                      Start Date:{" "}
+                      {new Date(item.startDate).toLocaleDateString("en-GB", {
+                        day: "2-digit",
+                        month: "short",
+                        year: "numeric",
+                      })}
+                    </Text>
+
+                    <Text>
+                      End Date:{" "}
+                      {new Date(item.endDate).toLocaleDateString("en-GB", {
+                        day: "2-digit",
+                        month: "short",
+                        year: "numeric",
+                      })}
+                    </Text>
+
+                    <Text>
+                      Total Days:{" "}
+                      {(() => {
+                        if (item.startDate && item.endDate) {
+                          const start = new Date(item.startDate);
+                          const end = new Date(item.endDate);
+                          const diffTime = Math.abs(end - start);
+                          const diffDays =
+                            Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
+                          return diffDays;
+                        }
+                        return 0;
+                      })()}
+                    </Text>
+
+                    <Text>Reason: {item.reason}</Text>
+                  </View>
+                );
+              }
+              return null; // skip if not approved
+            })
+          ) : (
+            <Text style={{ textAlign: "center", marginTop: 20 }}>
+              No approved leaves
+            </Text>
+          )}
+        </ScrollView>
+      </View>
+    );
+  };
 
 
   const closemodal = () => {
@@ -109,7 +235,6 @@ const Leaves = () => {
 
   const getLeaves = async () => {
     try {
-      // ✅ Always fetch token fresh from AsyncStorage
       const token = await AsyncStorage.getItem("access_token");
 
       if (!token) {
@@ -117,7 +242,6 @@ const Leaves = () => {
         return;
       }
 
-      // ✅ Get user from Zustand
       const user = useUserStore.getState().user;
       const id = user?.User?._id;
 
@@ -135,7 +259,7 @@ const Leaves = () => {
 
       const response = await axios.post(url, body, {
         headers: {
-          Authorization: `Bearer ${token}`, // ✅ Correct format
+          Authorization: `Bearer ${token}`,
         },
       });
 
@@ -144,7 +268,8 @@ const Leaves = () => {
 
       if (response.status >= 200 && response.status < 300) {
         successMessage(response.data?.message || "Leaves fetched successfully");
-        return response.data; // ✅ return so caller can use
+        setleave(response.data?.leaves || []);
+        return response.data;
       }
     } catch (error) {
       console.error("API ERROR >>", error.response?.data || error.message);
@@ -165,13 +290,11 @@ const Leaves = () => {
 
   const submitLeave = async () => {
     try {
-      // ✅ Fetch token fresh from storage
       const token = await AsyncStorage.getItem("access_token");
 
       const user = useUserStore.getState().user;
       const id = user?.User?._id;
 
-      // ✅ Validate fields
       if (!reason || !startDate || !endDate || !selectedOption) {
         errorMessage("Please enter all fields");
         return;
@@ -210,7 +333,7 @@ const Leaves = () => {
       if (response.status === 200 || response.status === 201) {
         successMessage(response.data?.message || "Leave applied successfully");
         console.log(response.data?.message || "Leave applied successfully");
-        setModal(false); // close modal
+        setModal(false);
         return response.data;
       }
     } catch (error) {
@@ -393,98 +516,95 @@ const Leaves = () => {
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
-      <View style={{ flex: 1 }}>
+      <ScrollView>
+        <View style={{ flex: 1 }}>
+          <View style={{
+            flexDirection: 'row', justifyContent: 'center', backgroundColor: 'orange', borderRadius: 50, borderWidth: 0.1, borderColor: 'orange', marginHorizontal: moderateScale(10),
+            marginTop: moderateScaleVertical(30), padding: 5,
+          }}>
+            <TouchableOpacity
+              style={{
+                flex: 1,
+                paddingVertical: 15,
+                justifyContent: 'center',
+                alignItems: 'center',
+                backgroundColor: selectedTab === 'Pending' ? '#fff' : 'orange',
+                borderRadius: 50
+              }}
+              onPress={() => handleTabChange('Pending')}
+            >
+              <Text style={{
+                color: selectedTab === 'Pending' ? 'orange' : '#fff',
+                fontSize: 16,
+                fontWeight: '600'
+              }}>Pending</Text>
+            </TouchableOpacity>
 
-        <View style={{
-          flexDirection: 'row',
-          justifyContent: 'center',
-          backgroundColor: 'orange',
-          borderRadius: 50,
-          borderWidth: 0.1,
-          borderColor: 'orange',
-          marginHorizontal: moderateScale(10),
-          marginTop: moderateScaleVertical(30),
-          padding: 5,
-        }}>
-          <TouchableOpacity
+            <TouchableOpacity
+              style={{
+                flex: 1,
+                paddingVertical: 15,
+                justifyContent: 'center',
+                alignItems: 'center',
+                backgroundColor: selectedTab === 'Approved' ? '#fff' : 'orange',
+                borderRadius: 50
+              }}
+              onPress={() => handleTabChange('Approved')}
+            >
+              <Text style={{
+                color: selectedTab === 'Approved' ? 'orange' : '#fff',
+                fontSize: 16,
+                fontWeight: '600'
+              }}>Approved</Text>
+            </TouchableOpacity>
+          </View>
+
+          <ScrollView
+            showsVerticalScrollIndicator={false}
             style={{
               flex: 1,
-              paddingVertical: 15,
-              justifyContent: 'center',
-              alignItems: 'center',
-              backgroundColor: selectedTab === 'Pending' ? '#fff' : 'orange',
-              borderRadius: 50
+              marginTop: moderateScaleVertical(50),
+              marginLeft: moderateScale(20),
+              marginRight: moderateScale(20)
             }}
-            onPress={() => handleTabChange('Pending')}
           >
-            <Text style={{
-              color: selectedTab === 'Pending' ? 'orange' : '#fff',
-              fontSize: 16,
-              fontWeight: '600'
-            }}>Pending</Text>
-          </TouchableOpacity>
+            {selectedTab === 'Pending' ? (
+              <View>
+                {pendingContent()}
+              </View>
+            ) : (
+              <View>
+                {approvedcontent()}
+              </View>
+            )}
 
-          <TouchableOpacity
-            style={{
-              flex: 1,
-              paddingVertical: 15,
-              justifyContent: 'center',
-              alignItems: 'center',
-              backgroundColor: selectedTab === 'Approved' ? '#fff' : 'orange',
-              borderRadius: 50
-            }}
-            onPress={() => handleTabChange('Approved')}
-          >
-            <Text style={{
-              color: selectedTab === 'Approved' ? 'orange' : '#fff',
-              fontSize: 16,
-              fontWeight: '600'
-            }}>Approved</Text>
-          </TouchableOpacity>
+          </ScrollView>
+          {modalfn()}
         </View>
-
-        <ScrollView
-          showsVerticalScrollIndicator={false}
+      </ScrollView>
+      <View >
+        <TouchableOpacity
           style={{
-            flex: 1,
-            marginTop: moderateScaleVertical(50),
-            marginLeft: moderateScale(20),
-            marginRight: moderateScale(20)
+            backgroundColor: 'orange',
+            width: moderateScale(50),
+            height: moderateScaleVertical(50),
+            alignItems: 'center',
+            justifyContent: 'center',
+            borderRadius: 15,
+            position: 'absolute',
+            bottom: moderateScaleVertical(90),
+            right: moderateScale(20),
           }}
+          onPress={() => setModal(true)}
         >
-          {selectedTab === 'Pending' ? (
-            <View>
-              {pendingContent()}
-            </View>
-          ) : (
-            <View>
-              {approvedcontent()}
-            </View>
-          )}
-
-        </ScrollView>
-        {modalfn()}
+          <Image
+            source={{ uri: 'https://cdn-icons-png.flaticon.com/512/2997/2997933.png' }}
+            style={{ height: moderateScaleVertical(25), width: moderateScale(25) }}
+            tintColor='white'
+          />
+        </TouchableOpacity>
       </View>
-      <TouchableOpacity
-        style={{
-          backgroundColor: 'orange',
-          width: moderateScale(50),
-          height: moderateScaleVertical(50),
-          alignItems: 'center',
-          justifyContent: 'center',
-          borderRadius: 15,
-          position: 'absolute',
-          bottom: moderateScaleVertical(90),
-          right: moderateScale(20),
-        }}
-        onPress={() => setModal(true)}
-      >
-        <Image
-          source={{ uri: 'https://cdn-icons-png.flaticon.com/512/2997/2997933.png' }}
-          style={{ height: moderateScaleVertical(25), width: moderateScale(25) }}
-          tintColor='white'
-        />
-      </TouchableOpacity>
+
 
     </SafeAreaView>
   );
