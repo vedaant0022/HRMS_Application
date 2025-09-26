@@ -30,6 +30,7 @@ const Finance = () => {
   const [document, setdocument] = useState('');
   const [isImageEnlarged, setIsImageEnlarged] = useState(false);
   const [finance, setfinance] = useState('');
+  const [loading, setLoading] = useState(false);
 
 
   const data = ['Travel', 'Food', 'Office Supplies', 'Medical', 'Others'];
@@ -70,23 +71,11 @@ const Finance = () => {
     return markedDates;
   };
 
-
-
-
   const handleTabChange = (tab) => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
     setSelectedTab(tab);
   };
 
-  // const pendingContent = () => {
-  //   return (
-  //     <View>
-  //       <View>
-  //         <Text>Hello</Text>
-  //       </View>
-  //     </View>
-  //   )
-  // }
   const pendingContent = () => {
     return (
       <View style={{ flex: 1 }}>
@@ -162,15 +151,6 @@ const Finance = () => {
     );
   };
 
-  // const approvedcontent = () => {
-  //   return (
-  //     <View>
-  //       <View>
-  //         <Text>Finance Approved</Text>
-  //       </View>
-  //     </View>
-  //   )
-  // }
 
   const approvedcontent = () => {
     return (
@@ -339,22 +319,79 @@ const Finance = () => {
     getfinanceRequests();
   }, [])
 
+  // const submitLeave = async () => {
+  //   try {
+  //     const token = await AsyncStorage.getItem("access_token");
+  //     const user = useUserStore.getState().user;
+  //     const id = user?.User?._id;
+
+  //     if (!description || !amount || !selectedOption || !document) {
+  //       errorMessage("Please Enter all fields");
+  //       return;
+  //     }
+  //     if (!token) {
+  //       errorMessage("Unauthorized Access");
+  //       return;
+  //     }
+  //     if (!id) {
+  //       errorMessage("Invalid user data");
+  //       return;
+  //     }
+
+  //     const formData = new FormData();
+  //     formData.append("category", selectedOption);
+  //     formData.append("amount", amount);
+  //     formData.append("description", description);
+  //     formData.append("documents", {
+  //       uri: document.uri || document,
+  //       type: document.type || "image/jpeg",
+  //       name: document.fileName || "upload.jpg",
+  //     });
+
+  //     console.log("FORMDATA SENT >>> ", formData);
+
+  //     const response = await axios.post(
+  //       `${base_url}/reimbursement/apply`,
+  //       formData,
+  //       {
+  //         headers: {
+  //           "Content-Type": "multipart/form-data",
+  //           Authorization: `Bearer ${token}`,
+  //         },
+  //       }
+  //     );
+
+  //     console.log("RESPONSE >>>", response.data);
+  //     successMessage("Reimbursement submitted successfully");
+  //     setModal(false)
+  //   } catch (error) {
+  //     console.error("Error submitting reimbursement >>>", error.response?.data || error.message);
+  //     errorMessage("Failed to submit reimbursement");
+  //   }
+  // };
+
+
   const submitLeave = async () => {
     try {
+      setLoading(true); // start loader
+
       const token = await AsyncStorage.getItem("access_token");
       const user = useUserStore.getState().user;
       const id = user?.User?._id;
 
       if (!description || !amount || !selectedOption || !document) {
         errorMessage("Please Enter all fields");
+        setLoading(false);
         return;
       }
       if (!token) {
         errorMessage("Unauthorized Access");
+        setLoading(false);
         return;
       }
       if (!id) {
         errorMessage("Invalid user data");
+        setLoading(false);
         return;
       }
 
@@ -383,13 +420,21 @@ const Finance = () => {
 
       console.log("RESPONSE >>>", response.data);
       successMessage("Reimbursement submitted successfully");
-      setModal(false)
+      setdescription("");
+      setamount("");
+      setSelectedOption(null);
+      setdocument(null);
+      setModal(false);
     } catch (error) {
-      console.error("Error submitting reimbursement >>>", error.response?.data || error.message);
+      console.error(
+        "Error submitting reimbursement >>>",
+        error.response?.data || error.message
+      );
       errorMessage("Failed to submit reimbursement");
+    } finally {
+      setLoading(false); // stop loader always
     }
   };
-
 
   const modalfn = () => (
     <Modal
@@ -520,7 +565,8 @@ const Finance = () => {
                 onPress={submitLeave}
                 backgroundColor="orange"
                 textColor="white"
-                disabled={false}
+                loading={loading}
+                disabled={loading}
               />
 
             </View>

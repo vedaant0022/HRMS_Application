@@ -78,6 +78,11 @@ const Map = () => {
         longitude: 72.808541,
     };
 
+    const shadearea = {
+        latitude: location?.latitude || defaultCoords.latitude,
+        longitude: location?.longitude || defaultCoords.longitude,
+    };
+
     const mapRegion = {
         latitude: location?.latitude || defaultCoords.latitude,
         longitude: location?.longitude || defaultCoords.longitude,
@@ -91,36 +96,7 @@ const Map = () => {
         <SafeAreaView style={styles.container}>
             <View style={styles.mapWrapper}>
 
-                {/* <MapView
-                    initialRegion={{
-                        latitude: 19.339012,
-                        longitude: 72.808541,
-                        latitudeDelta: 0.01,
-                        longitudeDelta: 0.01,
-                    }}
-                    style={styles.map}
-                    showsUserLocation={true}
-                >
-                    <Marker
-                        coordinate={{
-                            latitude: 19.339012,
-                            longitude: 72.808541,
-                        }}
-                        title="You are here"
-                        description="Current location"
-                    />
 
-                    <Circle
-                        center={{
-                            latitude: 19.339012,
-                            longitude: 72.808541,
-                        }}
-                        radius={150} // in meters
-                        strokeWidth={1}
-                        strokeColor="rgba(245, 8, 8, 0.5)"
-                        fillColor="rgba(224, 126, 126, 0.43)"
-                    />
-                </MapView> */}
 
                 <MapView
                     initialRegion={mapRegion}
@@ -134,13 +110,13 @@ const Map = () => {
                     />
 
                     <Circle
-                        center={defaultCoords}
+                        center={shadearea}
                         radius={150}
                         strokeWidth={1}
                         strokeColor="rgba(245, 8, 8, 0.5)"
                         fillColor="rgba(224, 126, 126, 0.43)"
                     />
-                    
+
                 </MapView>
 
             </View>

@@ -32,6 +32,7 @@ const Leaves = () => {
   const today = new Date().toISOString().split('T')[0];
   const [selectedOption, setSelectedOption] = useState('');
   const [leave, setleave] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const data = ['Sick', 'Causal', 'Paid', 'Other'];
 
@@ -288,23 +289,87 @@ const Leaves = () => {
 
 
 
+  // const submitLeave = async () => {
+  //   try {
+  //     const token = await AsyncStorage.getItem("access_token");
+
+  //     const user = useUserStore.getState().user;
+  //     const id = user?.User?._id;
+
+  //     if (!reason || !startDate || !endDate || !selectedOption) {
+  //       errorMessage("Please enter all fields");
+  //       return;
+  //     }
+  //     if (!token) {
+  //       errorMessage("Unauthorized Access");
+  //       return;
+  //     }
+  //     if (!id) {
+  //       errorMessage("Invalid user data");
+  //       return;
+  //     }
+
+  //     const body = {
+  //       employeeId: id,
+  //       leaveType: selectedOption,
+  //       startDate,
+  //       endDate,
+  //       reason,
+  //     };
+
+  //     const url = `${base_url}/leaves/apply`;
+
+  //     console.log("API HIT >>", url);
+  //     console.log("BODY >>", body);
+
+  //     const response = await axios.post(url, body, {
+  //       headers: {
+  //         Authorization: `Bearer ${token}`,
+  //       },
+  //     });
+
+  //     console.log("Response Status:", response.status);
+  //     console.log("Response Data >>>", response.data);
+
+  //     if (response.status === 200 || response.status === 201) {
+  //       successMessage(response.data?.message || "Leave applied successfully");
+  //       console.log(response.data?.message || "Leave applied successfully");
+  //       setModal(false);
+  //       return response.data;
+  //     }
+  //   } catch (error) {
+  //     console.error("API ERROR >>", error.response?.data || error.message);
+
+  //     if (error.response?.data?.message) {
+  //       errorMessage(error.response.data.message);
+  //     } else {
+  //       errorMessage("Something went wrong. Please try again.");
+  //     }
+  //   }
+  // };
+
+
   const submitLeave = async () => {
     try {
-      const token = await AsyncStorage.getItem("access_token");
+      setLoading(true); // start loader
 
+      const token = await AsyncStorage.getItem("access_token");
       const user = useUserStore.getState().user;
       const id = user?.User?._id;
 
       if (!reason || !startDate || !endDate || !selectedOption) {
         errorMessage("Please enter all fields");
+        setLoading(false);
         return;
       }
       if (!token) {
         errorMessage("Unauthorized Access");
+        setLoading(false);
         return;
       }
       if (!id) {
         errorMessage("Invalid user data");
+        setLoading(false);
         return;
       }
 
@@ -333,8 +398,17 @@ const Leaves = () => {
       if (response.status === 200 || response.status === 201) {
         successMessage(response.data?.message || "Leave applied successfully");
         console.log(response.data?.message || "Leave applied successfully");
+
+        // ✅ Reset form
+        setreason("");
+        setStartDate("");
+        setEndDate("");
+        setSelectedOption(null);
+
         setModal(false);
+        getLeaves();
         return response.data;
+
       }
     } catch (error) {
       console.error("API ERROR >>", error.response?.data || error.message);
@@ -344,10 +418,10 @@ const Leaves = () => {
       } else {
         errorMessage("Something went wrong. Please try again.");
       }
+    } finally {
+      setLoading(false); // stop loader always
     }
   };
-
-
 
 
 
@@ -504,7 +578,8 @@ const Leaves = () => {
                 onPress={submitLeave}
                 backgroundColor="orange"
                 textColor="white"
-                disabled={false} // Set to true if you want to disable the button
+                loading={loading}
+                disabled={loading}
               />
 
             </View>
