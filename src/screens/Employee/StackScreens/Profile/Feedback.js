@@ -2,7 +2,6 @@ import { View, Text, SafeAreaView, TouchableOpacity, Image, TextInput } from 're
 import React, { useState } from 'react'
 import { moderateScale, moderateScaleVertical } from '../../../../styles/Responsiveness/responsiveSize'
 import EmpHeader from '../../../../components/Employee/Header/EmpHeader'
-import { Button } from 'react-native-paper'
 import { useNavigation } from '@react-navigation/native'
 import { errorMessage, successMessage } from '../../../../utils'
 import axios from 'axios'
