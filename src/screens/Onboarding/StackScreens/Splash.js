@@ -17,49 +17,44 @@ const Splash = () => {
       const token = await AsyncStorage.getItem('access_token');
       if (!token) {
         errorMessage("Unauthorized Access");
-        return; 
+        return;
       }
-  
+
       const url = `${base_url}/users/me`;
-  
+
       const response = await axios.get(url, {
         headers: {
-          Authorization: `Bearer ${token}`, 
+          Authorization: `Bearer ${token}`,
         },
       });
-  
-      // console.log("USER DETAILS >>>", response.data.user);
+
       const setUser = useUserStore.getState().setUser;
-    setUser(response.data.user);
+      setUser(response.data.user);
+      navigation.navigate('Employee');
+      console.log("Token Received>>", token)
+      successMessage('Welcome back!');
       return response.data;
     } catch (error) {
       console.error("ERROR FETCHING DETAILS >>>", error.response?.data || error.message);
       errorMessage(error.response?.data?.message || "Failed to fetch user details");
     }
   };
-  
-  useEffect(() => {
-    
-  }, []);
+
   setTimeout(async () => {
     const token = await AsyncStorage.getItem('access_token');
     if (!token) {
       navigation.navigate('Getstarted');
-      
     } else {
       getDetails();
-      navigation.navigate('Employee');
-      successMessage('Welcome back!');
-      console.log("Token Received>>",token)
     }
     // navigation.navigate('Getstarted');
 
   }, 3000);
   return (
-    <SafeAreaView style={{flex:1,backgroundColor:'#fff'}}>
-      <View style={{flex:1,backgroundColor:'#fff',marginLeft:moderateScale(15),marginRight:moderateScale(15),marginTop:moderateScaleVertical(30)}}>
-        <View style={{alignItems:'center',justifyContent:'center',flex:1}}>
-          <Text style={{fontSize:28,letterSpacing:5,paddingBottom:25}}>Ease<Text style={{color: 'orange'}}>Employee</Text></Text>
+    <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
+      <View style={{ flex: 1, backgroundColor: '#fff', marginLeft: moderateScale(15), marginRight: moderateScale(15), marginTop: moderateScaleVertical(30) }}>
+        <View style={{ alignItems: 'center', justifyContent: 'center', flex: 1 }}>
+          <Text style={{ fontSize: 28, letterSpacing: 5, paddingBottom: 25 }}>Ease<Text style={{ color: 'orange' }}>Employee</Text></Text>
           <ActivityIndicator size={'large'} color={'orange'} />
         </View>
       </View>

@@ -22,8 +22,7 @@ const Feedback = () => {
         errorMessage("Please Enter Feedback");
         return;
       }
-  
-      // ✅ Get user directly from Zustand state
+
       const user = useUserStore.getState().user;
   
       if (!user) {
@@ -37,7 +36,7 @@ const Feedback = () => {
         return;
       }
   
-      const id = user?.User?._id; // safe access
+      const id = user?.User?._id; 
       if (!id) {
         errorMessage("Invalid user data");
         return;
