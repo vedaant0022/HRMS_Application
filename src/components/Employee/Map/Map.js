@@ -9,7 +9,6 @@ import Geolocation from '@react-native-community/geolocation';
 
 const Map = () => {
 
-    const navigation = useNavigation();
     const [location, setLocation] = useState(null);
 
 

@@ -79,6 +79,16 @@ const Leaves = () => {
     setSelectedTab(tab);
   };
 
+  const handleAccept = (id) => {
+    console.log("Accepted Leave:", id);
+    // Call Approve API here
+  };
+
+  const handleReject = (id) => {
+    console.log("Rejected Leave:", id);
+    // Call Reject API here
+  };
+
   const pendingContent = () => {
     return (
       <View style={{ flex: 1 }}>
@@ -93,50 +103,135 @@ const Leaves = () => {
                   <View
                     key={index}
                     style={{
-                      borderWidth: 1,
-                      height: 140,
-                      borderRadius: 12,
-                      marginBottom: 10,
-                      padding: 20,
+                      borderRadius: 16,
+                      padding: 18,
+                      marginBottom: 18,
+                      backgroundColor: "#ffffff",
+                      borderLeftWidth: 5,
+                      borderLeftColor:
+                        item.status === "Approved"
+                          ? "#27ae60"
+                          : item.status === "Rejected"
+                            ? "#e74c3c"
+                            : "#f7a82b",
+                      elevation: 5,
+                      shadowColor: "#000",
+                      shadowOpacity: 0.1,
+                      shadowRadius: 6,
                     }}
                   >
-                    <Text>Status: {item.status}</Text>
-                    <Text>Leave Type: {item.leaveType}</Text>
+                    <View style={{flexDirection:'row',justifyContent:'space-between'}}>
+                      <View>
+                        {/* Status + Type */}
+                        <View style={{ marginBottom: 10 }}>
+                          <Text style={{ fontSize: 17, fontWeight: "700", color: "#343a40" }}>
+                            {item.leaveType}
+                          </Text>
 
-                    <Text>
-                      Start Date:{" "}
-                      {new Date(item.startDate).toLocaleDateString("en-GB", {
-                        day: "2-digit",
-                        month: "short",
-                        year: "numeric",
-                      })}
-                    </Text>
+                          <Text
+                            style={{
+                              alignSelf: "flex-start",
+                              backgroundColor:
+                                item.status === "Approved"
+                                  ? "rgba(39, 174, 96, 0.15)"
+                                  : item.status === "Rejected"
+                                    ? "rgba(231, 76, 60, 0.15)"
+                                    : "rgba(247, 168, 43, 0.15)",
+                              color:
+                                item.status === "Approved"
+                                  ? "#27ae60"
+                                  : item.status === "Rejected"
+                                    ? "#e74c3c"
+                                    : "#d38800",
+                              paddingVertical: 4,
+                              paddingHorizontal: 10,
+                              borderRadius: 10,
+                              fontWeight: "700",
+                              marginTop: 4,
+                            }}
+                          >
+                            {item.status}
+                          </Text>
+                        </View>
 
-                    <Text>
-                      End Date:{" "}
-                      {new Date(item.endDate).toLocaleDateString("en-GB", {
-                        day: "2-digit",
-                        month: "short",
-                        year: "numeric",
-                      })}
-                    </Text>
+                        {/* Dates */}
+                        <Text style={{ marginBottom: 6, color: "#444" }}>
+                          📅 Start:{" "}
+                          <Text style={{ fontWeight: "600" }}>
+                            {new Date(item.startDate).toLocaleDateString("en-GB", {
+                              day: "2-digit",
+                              month: "short",
+                              year: "numeric",
+                            })}
+                          </Text>
+                        </Text>
 
-                    <Text>
-                      Total Days:{" "}
-                      {(() => {
-                        if (item.startDate && item.endDate) {
-                          const start = new Date(item.startDate);
-                          const end = new Date(item.endDate);
-                          const diffTime = Math.abs(end - start);
-                          const diffDays =
-                            Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
-                          return diffDays;
-                        }
-                        return 0;
-                      })()}
-                    </Text>
+                        <Text style={{ marginBottom: 6, color: "#444" }}>
+                          📅 End:{" "}
+                          <Text style={{ fontWeight: "600" }}>
+                            {new Date(item.endDate).toLocaleDateString("en-GB", {
+                              day: "2-digit",
+                              month: "short",
+                              year: "numeric",
+                            })}
+                          </Text>
+                        </Text>
 
-                    <Text>Reason: {item.reason}</Text>
+                        {/* Days */}
+                        <Text style={{ marginBottom: 10, fontWeight: "700", color: "#f7a82b" }}>
+                          ⏱ Total Days:{" "}
+                          {(() => {
+                            if (item.startDate && item.endDate) {
+                              const start = new Date(item.startDate);
+                              const end = new Date(item.endDate);
+                              const diffTime = Math.abs(end - start);
+                              return Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
+                            }
+                            return 0;
+                          })()}
+                        </Text>
+
+                        {/* Reason */}
+                        <Text style={{ color: "#6c757d" }}>📝 {item.reason}</Text>
+                      </View>
+                      <View
+                        style={{
+                          flexDirection: "row",
+                          gap: 15,
+                          marginTop: 14,
+                        }}
+                      >
+                        <TouchableOpacity
+                          onPress={() => handleAccept(item._id)}
+                          style={{
+                            backgroundColor: "#27ae60",
+                            paddingVertical: 10,
+                            paddingHorizontal: 20,
+                            borderRadius: 8,
+                            height:moderateScaleVertical(40)
+                          }}
+                        >
+                          <Text style={{ color: "#fff", fontWeight: "600" }}>Accept</Text>
+                        </TouchableOpacity>
+
+                        <TouchableOpacity
+                          onPress={() => handleReject(item._id)}
+                          style={{
+                            backgroundColor: "#e74c3c",
+                            paddingVertical: 10,
+                            paddingHorizontal: 20,
+                            borderRadius: 8,
+                            height:moderateScaleVertical(40)
+                          }}
+                        >
+                          <Text style={{ color: "#fff", fontWeight: "600" }}>Reject</Text>
+                        </TouchableOpacity>
+                      </View>
+
+                    </View>
+
+
+
                   </View>
                 );
               }
@@ -164,53 +259,78 @@ const Leaves = () => {
               if (item.status?.toLowerCase() === "approved") {
                 return (
                   <View
-                    key={index}
-                    style={{
-                      borderWidth: 1,
-                      height: 140,
-                      borderRadius: 12,
-                      marginBottom: 10,
-                      padding: 20,
-                    }}
-                  >
-                    <Text>Status: {item.status}</Text>
-                    <Text>Leave Type: {item.leaveType}</Text>
+  key={index}
+  style={{
+    borderWidth: 1,
+    borderColor: "#dcdcdc",
+    backgroundColor: "#ffffff",
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 14,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.08,
+    shadowRadius: 4,
+    elevation: 3,
+  }}
+>
+  {/* Status */}
+  <Text style={{ fontSize: 16, fontWeight: "700", marginBottom: 6, color: "#333" }}>
+    Status:{" "}
+    <Text
+      style={{
+        color:
+          item.status === "Approved"
+            ? "#27ae60"
+            : item.status === "Rejected"
+            ? "#e74c3c"
+            : "#f1c40f",
+      }}
+    >
+      {item.status}
+    </Text>
+  </Text>
 
-                    <Text>
-                      Start Date:{" "}
-                      {new Date(item.startDate).toLocaleDateString("en-GB", {
-                        day: "2-digit",
-                        month: "short",
-                        year: "numeric",
-                      })}
-                    </Text>
+  <Text style={{ marginBottom: 4, color: "#555" }}>
+    Leave Type: <Text style={{ fontWeight: "600" }}>{item.leaveType}</Text>
+  </Text>
 
-                    <Text>
-                      End Date:{" "}
-                      {new Date(item.endDate).toLocaleDateString("en-GB", {
-                        day: "2-digit",
-                        month: "short",
-                        year: "numeric",
-                      })}
-                    </Text>
+  <Text style={{ marginBottom: 4, color: "#555" }}>
+    Start Date:{" "}
+    {new Date(item.startDate).toLocaleDateString("en-GB", {
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+    })}
+  </Text>
 
-                    <Text>
-                      Total Days:{" "}
-                      {(() => {
-                        if (item.startDate && item.endDate) {
-                          const start = new Date(item.startDate);
-                          const end = new Date(item.endDate);
-                          const diffTime = Math.abs(end - start);
-                          const diffDays =
-                            Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
-                          return diffDays;
-                        }
-                        return 0;
-                      })()}
-                    </Text>
+  <Text style={{ marginBottom: 4, color: "#555" }}>
+    End Date:{" "}
+    {new Date(item.endDate).toLocaleDateString("en-GB", {
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+    })}
+  </Text>
 
-                    <Text>Reason: {item.reason}</Text>
-                  </View>
+  <Text style={{ marginBottom: 4, fontWeight: "600", color: "#333" }}>
+    Total Days:{" "}
+    {(() => {
+      if (item.startDate && item.endDate) {
+        const start = new Date(item.startDate);
+        const end = new Date(item.endDate);
+        const diffTime = Math.abs(end - start);
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
+        return diffDays;
+      }
+      return 0;
+    })()}
+  </Text>
+
+  <Text style={{ color: "#666", marginTop: 4 }}>
+    Reason: {item.reason}
+  </Text>
+</View>
                 );
               }
               return null; // skip if not approved

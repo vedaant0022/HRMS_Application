@@ -47,8 +47,6 @@ const Splash = () => {
     } else {
       getDetails();
     }
-    // navigation.navigate('Getstarted');
-
   }, 3000);
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
