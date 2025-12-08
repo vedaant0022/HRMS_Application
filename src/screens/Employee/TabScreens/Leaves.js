@@ -18,10 +18,7 @@ if (Platform.OS === 'android') {
 }
 
 const Leaves = () => {
-
-
   const navigation = useNavigation();
-
   const [selectedTab, setSelectedTab] = useState('Pending');
   const [modal, setModal] = useState(false);
   const [reason, setreason] = useState('')
@@ -34,12 +31,12 @@ const Leaves = () => {
   const [leave, setleave] = useState('');
   const [loading, setLoading] = useState(false);
 
+  const user = useUserStore((state) => state.user);
+  console.log("USER DETAILS >> ", user)
+
   const data = ['Sick', 'Causal', 'Paid', 'Other'];
-
-
-
   const handleSelectionChange = (value) => {
-    setSelectedOption(value); // Update the selected option
+    setSelectedOption(value);
   };
 
   const handleStartDateChange = (date) => {
@@ -81,20 +78,56 @@ const Leaves = () => {
 
   const handleAccept = (id) => {
     console.log("Accepted Leave:", id);
-    // Call Approve API here
   };
 
   const handleReject = (id) => {
     console.log("Rejected Leave:", id);
-    // Call Reject API here
   };
 
+  const buttons = () => {
+    return (
+      <View
+        style={{
+          flexDirection: "row",
+          gap: 10,
+          marginTop: 50,
+          position: 'absolute'
+        }}
+      >
+        <TouchableOpacity
+          onPress={() => handleAccept(item._id)}
+          style={{
+            backgroundColor: "#27ae60",
+            paddingVertical: 10,
+            paddingHorizontal: moderateScale(20),
+            borderRadius: 8,
+            height: moderateScaleVertical(40)
+          }}
+        >
+          <Text style={{ color: "#fff", fontWeight: "600" }}>Accept</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          onPress={() => handleReject(item._id)}
+          style={{
+            backgroundColor: "#e74c3c",
+            paddingVertical: 10,
+            paddingHorizontal: moderateScale(20),
+            borderRadius: 8,
+            height: moderateScaleVertical(40)
+          }}
+        >
+          <Text style={{ color: "#fff", fontWeight: "600" }}>Reject</Text>
+        </TouchableOpacity>
+      </View>
+    )
+  }
   const pendingContent = () => {
     return (
       <View style={{ flex: 1 }}>
         <ScrollView
           showsVerticalScrollIndicator={false}
-          contentContainerStyle={{ paddingBottom: 20 }}
+          contentContainerStyle={{ paddingBottom: 20, marginBottom: 60 }}
         >
           {Array.isArray(leave) && leave.length > 0 ? (
             leave.map((item, index) => {
@@ -114,44 +147,52 @@ const Leaves = () => {
                           : item.status === "Rejected"
                             ? "#e74c3c"
                             : "#f7a82b",
-                      elevation: 5,
-                      shadowColor: "#000",
-                      shadowOpacity: 0.1,
-                      shadowRadius: 6,
+
                     }}
                   >
-                    <View style={{flexDirection:'row',justifyContent:'space-between'}}>
-                      <View>
+                    <View >
+                      <View style={{ flex: 1, }}>
                         {/* Status + Type */}
-                        <View style={{ marginBottom: 10 }}>
-                          <Text style={{ fontSize: 17, fontWeight: "700", color: "#343a40" }}>
-                            {item.leaveType}
-                          </Text>
+                        <View style={{ marginBottom: 10, flexDirection: 'row', justifyContent: 'space-evenly', alignItems: 'center', gap: moderateScale(150) }}>
+                          <View>
+                            <Text style={{ fontSize: 17, fontWeight: "700", color: "#343a40" }}>
+                              {item.leaveType}
+                            </Text>
+                          </View>
+                          <View style={{ flex: 1, alignItems: 'center' }}>
+                            <Text
+                              style={{
+                                alignSelf: "flex-end",
+                                backgroundColor:
+                                  item.status === "Approved"
+                                    ? "rgba(39, 174, 96, 0.15)"
+                                    : item.status === "Rejected"
+                                      ? "rgba(231, 76, 60, 0.15)"
+                                      : "rgba(247, 168, 43, 0.15)",
+                                color:
+                                  item.status === "Approved"
+                                    ? "#27ae60"
+                                    : item.status === "Rejected"
+                                      ? "#e74c3c"
+                                      : "#d38800",
+                                paddingVertical: 4,
+                                paddingHorizontal: 10,
+                                borderRadius: 10,
+                                fontWeight: "700",
+                                marginTop: 4,
+                              }}
+                            >
+                              {item.status}
+                            </Text>
+                            {/* buttons */}
+                            {(user?.User?.role === "Manager" || user?.User?.role === "HR") ? (
 
-                          <Text
-                            style={{
-                              alignSelf: "flex-start",
-                              backgroundColor:
-                                item.status === "Approved"
-                                  ? "rgba(39, 174, 96, 0.15)"
-                                  : item.status === "Rejected"
-                                    ? "rgba(231, 76, 60, 0.15)"
-                                    : "rgba(247, 168, 43, 0.15)",
-                              color:
-                                item.status === "Approved"
-                                  ? "#27ae60"
-                                  : item.status === "Rejected"
-                                    ? "#e74c3c"
-                                    : "#d38800",
-                              paddingVertical: 4,
-                              paddingHorizontal: 10,
-                              borderRadius: 10,
-                              fontWeight: "700",
-                              marginTop: 4,
-                            }}
-                          >
-                            {item.status}
-                          </Text>
+                              buttons()
+
+                            ) : (
+                              <></>
+                            )}
+                          </View>
                         </View>
 
                         {/* Dates */}
@@ -194,44 +235,7 @@ const Leaves = () => {
                         {/* Reason */}
                         <Text style={{ color: "#6c757d" }}>📝 {item.reason}</Text>
                       </View>
-                      <View
-                        style={{
-                          flexDirection: "row",
-                          gap: 15,
-                          marginTop: 14,
-                        }}
-                      >
-                        <TouchableOpacity
-                          onPress={() => handleAccept(item._id)}
-                          style={{
-                            backgroundColor: "#27ae60",
-                            paddingVertical: 10,
-                            paddingHorizontal: 20,
-                            borderRadius: 8,
-                            height:moderateScaleVertical(40)
-                          }}
-                        >
-                          <Text style={{ color: "#fff", fontWeight: "600" }}>Accept</Text>
-                        </TouchableOpacity>
-
-                        <TouchableOpacity
-                          onPress={() => handleReject(item._id)}
-                          style={{
-                            backgroundColor: "#e74c3c",
-                            paddingVertical: 10,
-                            paddingHorizontal: 20,
-                            borderRadius: 8,
-                            height:moderateScaleVertical(40)
-                          }}
-                        >
-                          <Text style={{ color: "#fff", fontWeight: "600" }}>Reject</Text>
-                        </TouchableOpacity>
-                      </View>
-
                     </View>
-
-
-
                   </View>
                 );
               }
@@ -247,9 +251,11 @@ const Leaves = () => {
     );
   };
 
+
+
   const approvedcontent = () => {
     return (
-      <View style={{ flex: 1 }}>
+      <View style={{ flex: 1, }}>
         <ScrollView
           showsVerticalScrollIndicator={false}
           contentContainerStyle={{ paddingBottom: 20 }}
@@ -259,92 +265,111 @@ const Leaves = () => {
               if (item.status?.toLowerCase() === "approved") {
                 return (
                   <View
-  key={index}
-  style={{
-    borderWidth: 1,
-    borderColor: "#dcdcdc",
-    backgroundColor: "#ffffff",
-    borderRadius: 12,
-    padding: 16,
-    marginBottom: 14,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.08,
-    shadowRadius: 4,
-    elevation: 3,
-  }}
->
-  {/* Status */}
-  <Text style={{ fontSize: 16, fontWeight: "700", marginBottom: 6, color: "#333" }}>
-    Status:{" "}
-    <Text
-      style={{
-        color:
-          item.status === "Approved"
-            ? "#27ae60"
-            : item.status === "Rejected"
-            ? "#e74c3c"
-            : "#f1c40f",
-      }}
-    >
-      {item.status}
-    </Text>
-  </Text>
+                    key={index}
+                    style={{
+                      backgroundColor: "#ffffff",
+                      borderRadius: 16,
+                      padding: 20,
+                      marginBottom: 18,
+                      borderLeftColor: "#27ae60",
+                      borderLeftWidth: 5
+                    }}
+                  >
+                    {/* Header with Status Badge */}
+                    <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+                      <Text style={{ fontSize: 18, fontWeight: "700", color: "#2d3436" }}>
+                        {item.leaveType}
+                      </Text>
 
-  <Text style={{ marginBottom: 4, color: "#555" }}>
-    Leave Type: <Text style={{ fontWeight: "600" }}>{item.leaveType}</Text>
-  </Text>
+                      <View
+                        style={{
+                          backgroundColor: "#27ae60",
+                          paddingVertical: 4,
+                          paddingHorizontal: 10,
+                          borderRadius: 12,
+                        }}
+                      >
+                        <Text style={{ color: "#fff", fontWeight: "600", fontSize: 14 }}>
+                          {item.status}
+                        </Text>
 
-  <Text style={{ marginBottom: 4, color: "#555" }}>
-    Start Date:{" "}
-    {new Date(item.startDate).toLocaleDateString("en-GB", {
-      day: "2-digit",
-      month: "short",
-      year: "numeric",
-    })}
-  </Text>
+                      </View>
+                    </View>
+                    {/* Dates */}
+                    <View style={{ marginTop: 8 }}>
+                      <Text style={{ color: "#666" }}>
+                        📅 Start:{" "}
+                        <Text style={{ fontWeight: "600" }}>
+                          {new Date(item.startDate).toLocaleDateString("en-GB", {
+                            day: "2-digit",
+                            month: "short",
+                            year: "numeric",
+                          })}
+                        </Text>
+                      </Text>
 
-  <Text style={{ marginBottom: 4, color: "#555" }}>
-    End Date:{" "}
-    {new Date(item.endDate).toLocaleDateString("en-GB", {
-      day: "2-digit",
-      month: "short",
-      year: "numeric",
-    })}
-  </Text>
+                      <Text style={{ color: "#666", marginTop: 2 }}>
+                        📌 End:{" "}
+                        <Text style={{ fontWeight: "600" }}>
+                          {new Date(item.endDate).toLocaleDateString("en-GB", {
+                            day: "2-digit",
+                            month: "short",
+                            year: "numeric",
+                          })}
+                        </Text>
+                      </Text>
+                    </View>
 
-  <Text style={{ marginBottom: 4, fontWeight: "600", color: "#333" }}>
-    Total Days:{" "}
-    {(() => {
-      if (item.startDate && item.endDate) {
-        const start = new Date(item.startDate);
-        const end = new Date(item.endDate);
-        const diffTime = Math.abs(end - start);
-        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
-        return diffDays;
-      }
-      return 0;
-    })()}
-  </Text>
+                    {/* Total Days */}
+                    <Text
+                      style={{
+                        marginTop: 8,
+                        fontWeight: "700",
+                        color: "#2d3436",
+                        fontSize: 15,
+                      }}
+                    >
+                      Total Days:{" "}
+                      {(() => {
+                        if (item.startDate && item.endDate) {
+                          const start = new Date(item.startDate);
+                          const end = new Date(item.endDate);
+                          const diffDays =
+                            Math.ceil(Math.abs(end - start) / (1000 * 60 * 60 * 24)) + 1;
+                          return diffDays;
+                        }
+                        return 0;
+                      })()}
+                    </Text>
 
-  <Text style={{ color: "#666", marginTop: 4 }}>
-    Reason: {item.reason}
-  </Text>
-</View>
+                    {/* Reason */}
+                    {item.reason ? (
+                      <Text style={{ color: "#636e72", marginTop: 10, fontSize: 14 }}>
+                        📝 {item.reason}
+                      </Text>
+                    ) : null}
+                  </View>
                 );
               }
-              return null; // skip if not approved
+              return null;
             })
           ) : (
-            <Text style={{ textAlign: "center", marginTop: 20 }}>
-              No approved leaves
+            <Text
+              style={{
+                textAlign: "center",
+                marginTop: 40,
+                fontSize: 16,
+                fontWeight: "600",
+                color: "#555",
+              }}
+            >
+              No approved leaves found ✨
             </Text>
           )}
         </ScrollView>
       </View>
     );
   };
-
 
   const closemodal = () => {
     setModal(false);
@@ -385,7 +410,7 @@ const Leaves = () => {
       });
 
       console.log("Response Status:", response.status);
-      console.log("Response Data >>>", response.data);
+      // console.log("Response Data >>>", response.data);
 
       if (response.status >= 200 && response.status < 300) {
         successMessage(response.data?.message || "Leaves fetched successfully");
@@ -406,68 +431,6 @@ const Leaves = () => {
   useEffect(() => {
     getLeaves()
   }, []);
-
-
-
-  // const submitLeave = async () => {
-  //   try {
-  //     const token = await AsyncStorage.getItem("access_token");
-
-  //     const user = useUserStore.getState().user;
-  //     const id = user?.User?._id;
-
-  //     if (!reason || !startDate || !endDate || !selectedOption) {
-  //       errorMessage("Please enter all fields");
-  //       return;
-  //     }
-  //     if (!token) {
-  //       errorMessage("Unauthorized Access");
-  //       return;
-  //     }
-  //     if (!id) {
-  //       errorMessage("Invalid user data");
-  //       return;
-  //     }
-
-  //     const body = {
-  //       employeeId: id,
-  //       leaveType: selectedOption,
-  //       startDate,
-  //       endDate,
-  //       reason,
-  //     };
-
-  //     const url = `${base_url}/leaves/apply`;
-
-  //     console.log("API HIT >>", url);
-  //     console.log("BODY >>", body);
-
-  //     const response = await axios.post(url, body, {
-  //       headers: {
-  //         Authorization: `Bearer ${token}`,
-  //       },
-  //     });
-
-  //     console.log("Response Status:", response.status);
-  //     console.log("Response Data >>>", response.data);
-
-  //     if (response.status === 200 || response.status === 201) {
-  //       successMessage(response.data?.message || "Leave applied successfully");
-  //       console.log(response.data?.message || "Leave applied successfully");
-  //       setModal(false);
-  //       return response.data;
-  //     }
-  //   } catch (error) {
-  //     console.error("API ERROR >>", error.response?.data || error.message);
-
-  //     if (error.response?.data?.message) {
-  //       errorMessage(error.response.data.message);
-  //     } else {
-  //       errorMessage("Something went wrong. Please try again.");
-  //     }
-  //   }
-  // };
-
 
   const submitLeave = async () => {
     try {
@@ -542,9 +505,6 @@ const Leaves = () => {
       setLoading(false); // stop loader always
     }
   };
-
-
-
 
   const modalfn = () => (
     <Modal
@@ -799,8 +759,6 @@ const Leaves = () => {
           />
         </TouchableOpacity>
       </View>
-
-
     </SafeAreaView>
   );
 };
