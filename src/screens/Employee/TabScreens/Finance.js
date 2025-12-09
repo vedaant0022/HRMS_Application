@@ -35,7 +35,7 @@ const Finance = () => {
 
 
   const data = ['Travel', 'Food', 'Office Supplies', 'Medical', 'Others'];
-
+  const user = useUserStore((state) => state.user);
   const handleSelectionChange = (value) => {
     setSelectedOption(value); // Update the selected option
   };
@@ -77,12 +77,51 @@ const Finance = () => {
     setSelectedTab(tab);
   };
 
+  const buttons = () => {
+    return (
+      <View
+        style={{
+          flexDirection: "row",
+          gap: 10,
+          marginTop: 50,
+          position: 'absolute',
+          right: 0,
+        }}
+      >
+        <TouchableOpacity
+          // onPress={() => handleAccept(item._id)}
+          style={{
+            backgroundColor: "#27ae60",
+            paddingVertical: 10,
+            paddingHorizontal: moderateScale(15),
+            borderRadius: 8,
+            height: moderateScaleVertical(40)
+          }}
+        >
+          <Text style={{ color: "#fff", fontWeight: "600" }}>Accept</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          // onPress={() => handleReject(item._id)}
+          style={{
+            backgroundColor: "#e74c3c",
+            paddingVertical: 10,
+            paddingHorizontal: moderateScale(15),
+            borderRadius: 8,
+            height: moderateScaleVertical(40)
+          }}
+        >
+          <Text style={{ color: "#fff", fontWeight: "600" }}>Reject</Text>
+        </TouchableOpacity>
+      </View>
+    )
+  }
   const pendingContent = () => {
     return (
       <View style={{ flex: 1 }}>
         <ScrollView
           showsVerticalScrollIndicator={false}
-          contentContainerStyle={{ paddingBottom: 20 }}
+          contentContainerStyle={{ paddingBottom: 20, marginBottom: 60 }}
         >
           {Array.isArray(finance) && finance.length > 0 ? (
             finance.map((item, index) => {
@@ -94,31 +133,92 @@ const Finance = () => {
                   <View
                     key={index}
                     style={{
-                      borderWidth: 1,
-                      borderRadius: 12,
-                      marginBottom: 10,
-                      padding: 20,
+                      borderRadius: 16,
+                      padding: 18,
+                      marginBottom: 18,
+                      backgroundColor: "#ffffff",
+                      borderLeftWidth: 5,
+                      borderLeftColor:
+                        item.status === "Approved"
+                          ? "#27ae60"
+                          : item.status === "Rejected"
+                            ? "#e74c3c"
+                            : "#f7a82b",
                     }}
                   >
-                    <Text>Status: {item.status}</Text>
-                    <Text>Category: {item.category}</Text>
-                    <Text>Amount: ₹{item.amount}</Text>
+                    {/* Top Section */}
+                    <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: 8, }}>
+                      <View >
+                        <Text style={{ fontSize: 17, fontWeight: "700", color: "#343a40" }}>
+                          {item.category}
+                        </Text>
+                      </View>
+                      <View >
+                        <Text
+                          style={{
+                            backgroundColor:
+                              item.status === "Approved"
+                                ? "rgba(39, 174, 96, 0.15)"
+                                : item.status === "Rejected"
+                                  ? "rgba(231, 76, 60, 0.15)"
+                                  : "rgba(247, 168, 43, 0.15)",
+                            color:
+                              item.status === "Approved"
+                                ? "#27ae60"
+                                : item.status === "Rejected"
+                                  ? "#e74c3c"
+                                  : "#d38800",
+                            paddingVertical: 4,
+                            paddingHorizontal: 10,
+                            borderRadius: 10,
+                            fontWeight: "700",
+                          }}
+                        >
+                          {item.status}
+                        </Text>
+                        {/* buttons */}
+                        {(user?.User?.role === "Manager" || user?.User?.role === "HR") ? (
+                          buttons()
+                        ) : (
+                          <></>
+                        )}
+                      </View>
+                    </View>
 
-                    <Text>
-                      Submitted At:{" "}
-                      {new Date(item.submittedAt).toLocaleDateString("en-GB", {
-                        day: "2-digit",
-                        month: "short",
-                        year: "numeric",
-                      })}
+                    {/* Amount */}
+                    <Text style={{ marginBottom: 6, color: "#444" }}>
+                      💰 Amount:{" "}
+                      <Text style={{ fontWeight: "700", color: "#000" }}>
+                        ₹{item.amount}
+                      </Text>
                     </Text>
 
-                    <Text>Description: {item.description}</Text>
+                    {/* Dates */}
+                    <Text style={{ marginBottom: 6, color: "#444" }}>
+                      📅 Submitted:{" "}
+                      <Text style={{ fontWeight: "600" }}>
+                        {new Date(item.submittedAt).toLocaleDateString("en-GB", {
+                          day: "2-digit",
+                          month: "short",
+                          year: "numeric",
+                        })}
+                      </Text>
+                    </Text>
 
-                    {/* Show Documents if available */}
+                    {/* Description */}
+                    {item.description ? (
+                      <Text style={{ color: "#6c757d", marginBottom: 8 }}>
+                        📝 {item.description}
+                      </Text>
+                    ) : null}
+
+                    {/* Documents Section */}
                     {item.documents && item.documents.length > 0 && (
                       <View style={{ marginTop: 10 }}>
-                        <Text>Documents:</Text>
+                        <Text style={{ fontWeight: "600", marginBottom: 4 }}>
+                          📎 Documents:
+                        </Text>
+
                         {item.documents.map((doc, docIndex) => (
                           <TouchableOpacity
                             key={docIndex}
@@ -126,7 +226,7 @@ const Finance = () => {
                           >
                             <Text
                               style={{
-                                color: "blue",
+                                color: "#0d6efd",
                                 textDecorationLine: "underline",
                                 marginVertical: 2,
                               }}
@@ -144,7 +244,7 @@ const Finance = () => {
             })
           ) : (
             <Text style={{ textAlign: "center", marginTop: 20 }}>
-              No pending or rejected finance
+              No pending or rejected reimbursements
             </Text>
           )}
         </ScrollView>
@@ -153,12 +253,98 @@ const Finance = () => {
   };
 
 
+  // const approvedcontent = () => {
+  //   return (
+  //     <View style={{ flex: 1 }}>
+  //       <ScrollView
+  //         showsVerticalScrollIndicator={false}
+  //         contentContainerStyle={{ paddingBottom: 20 }}
+  //       >
+  //         {Array.isArray(finance) && finance.length > 0 ? (
+  //           finance
+  //             .filter((item) => item.status?.toLowerCase() === "approved")
+  //             .map((item, index) => (
+  //               <View
+  //                 key={index}
+  //                 style={{
+  //                   borderWidth: 1,
+  //                   borderRadius: 12,
+  //                   marginBottom: 10,
+  //                   padding: 20,
+  //                 }}
+  //               >
+  //                 <Text>Status: {item.status}</Text>
+  //                 <Text>Category: {item.category}</Text>
+  //                 <Text>Amount: ₹{item.amount}</Text>
+  //                 <Text>Description: {item.description}</Text>
+  //                 <Text>Employee ID: {item.employeeId}</Text>
+
+  //                 <Text>
+  //                   Submitted At:{" "}
+  //                   {new Date(item.submittedAt).toLocaleDateString("en-GB", {
+  //                     day: "2-digit",
+  //                     month: "short",
+  //                     year: "numeric",
+  //                   })}
+  //                 </Text>
+
+  //                 <Text>
+  //                   Updated At:{" "}
+  //                   {new Date(item.updatedAt).toLocaleDateString("en-GB", {
+  //                     day: "2-digit",
+  //                     month: "short",
+  //                     year: "numeric",
+  //                   })}
+  //                 </Text>
+
+  //                 {/* Documents */}
+  //                 {item.documents && item.documents.length > 0 && (
+  //                   <View style={{ marginTop: 10 }}>
+  //                     <Text>Documents:</Text>
+  //                     {item.documents.map((doc, docIndex) => (
+  //                       <View key={docIndex} style={{ marginVertical: 5 }}>
+  //                         <TouchableOpacity
+  //                           onPress={() => Linking.openURL(doc.url)}
+  //                         >
+  //                           <Text
+  //                             style={{
+  //                               color: "blue",
+  //                               textDecorationLine: "underline",
+  //                             }}
+  //                           >
+  //                             View Document {docIndex + 1}
+  //                           </Text>
+  //                         </TouchableOpacity>
+  //                         <Text>
+  //                           Uploaded At:{" "}
+  //                           {new Date(doc.uploadedAt).toLocaleDateString("en-GB", {
+  //                             day: "2-digit",
+  //                             month: "short",
+  //                             year: "numeric",
+  //                           })}
+  //                         </Text>
+  //                       </View>
+  //                     ))}
+  //                   </View>
+  //                 )}
+  //               </View>
+  //             ))
+  //         ) : (
+  //           <Text style={{ textAlign: "center", marginTop: 20 }}>
+  //             No approved finance
+  //           </Text>
+  //         )}
+  //       </ScrollView>
+  //     </View>
+  //   );
+  // };
+
   const approvedcontent = () => {
     return (
       <View style={{ flex: 1 }}>
         <ScrollView
           showsVerticalScrollIndicator={false}
-          contentContainerStyle={{ paddingBottom: 20 }}
+          contentContainerStyle={{ paddingBottom: 20, marginBottom: 60 }}
         >
           {Array.isArray(finance) && finance.length > 0 ? (
             finance
@@ -167,63 +353,103 @@ const Finance = () => {
                 <View
                   key={index}
                   style={{
-                    borderWidth: 1,
-                    borderRadius: 12,
-                    marginBottom: 10,
-                    padding: 20,
+                    borderRadius: 16,
+                    padding: 18,
+                    marginBottom: 18,
+                    backgroundColor: "#ffffff",
+                    borderLeftWidth: 5,
+                    borderLeftColor: "#27ae60",
                   }}
                 >
-                  <Text>Status: {item.status}</Text>
-                  <Text>Category: {item.category}</Text>
-                  <Text>Amount: ₹{item.amount}</Text>
-                  <Text>Description: {item.description}</Text>
-                  <Text>Employee ID: {item.employeeId}</Text>
+                  {/* Top Section */}
+                  <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: 8 }}>
+                    <Text style={{ fontSize: 17, fontWeight: "700", color: "#343a40" }}>
+                      {item.category}
+                    </Text>
 
-                  <Text>
-                    Submitted At:{" "}
-                    {new Date(item.submittedAt).toLocaleDateString("en-GB", {
-                      day: "2-digit",
-                      month: "short",
-                      year: "numeric",
-                    })}
+                    <Text
+                      style={{
+                        backgroundColor: "rgba(39, 174, 96, 0.15)",
+                        color: "#27ae60",
+                        paddingVertical: 4,
+                        paddingHorizontal: 10,
+                        borderRadius: 10,
+                        fontWeight: "700",
+                      }}
+                    >
+                      {item.status}
+                    </Text>
+                  </View>
+
+                  {/* Employee ID */}
+                  {/* <Text style={{ color: "#6c757d", marginBottom: 6 }}>
+                    🧑‍💼 Employee ID:{" "}
+                    <Text style={{ fontWeight: "600", color: "#000" }}>
+                      {item.employeeId}
+                    </Text>
+                  </Text> */}
+
+                  {/* Amount */}
+                  <Text style={{ marginBottom: 6, color: "#444" }}>
+                    💰 Amount:{" "}
+                    <Text style={{ fontWeight: "700", color: "#000" }}>
+                      ₹{item.amount}
+                    </Text>
                   </Text>
 
-                  <Text>
-                    Updated At:{" "}
-                    {new Date(item.updatedAt).toLocaleDateString("en-GB", {
-                      day: "2-digit",
-                      month: "short",
-                      year: "numeric",
-                    })}
+                  {/* Submitted & Updated Dates */}
+                  <Text style={{ marginBottom: 6, color: "#444" }}>
+                    📤 Submitted:{" "}
+                    <Text style={{ fontWeight: "600" }}>
+                      {new Date(item.submittedAt).toLocaleDateString("en-GB", {
+                        day: "2-digit",
+                        month: "short",
+                        year: "numeric",
+                      })}
+                    </Text>
                   </Text>
+
+                  <Text style={{ marginBottom: 6, color: "#444" }}>
+                    🔄 Updated:{" "}
+                    <Text style={{ fontWeight: "600" }}>
+                      {new Date(item.updatedAt).toLocaleDateString("en-GB", {
+                        day: "2-digit",
+                        month: "short",
+                        year: "numeric",
+                      })}
+                    </Text>
+                  </Text>
+
+                  {/* Description */}
+                  {item.description && (
+                    <Text style={{ color: "#6c757d", marginBottom: 8 }}>
+                      📝 {item.description}
+                    </Text>
+                  )}
 
                   {/* Documents */}
-                  {item.documents && item.documents.length > 0 && (
+                  {item.documents?.length > 0 && (
                     <View style={{ marginTop: 10 }}>
-                      <Text>Documents:</Text>
+                      <Text style={{ fontWeight: "600", marginBottom: 4 }}>
+                        📎 Documents:
+                      </Text>
+
                       {item.documents.map((doc, docIndex) => (
-                        <View key={docIndex} style={{ marginVertical: 5 }}>
-                          <TouchableOpacity
-                            onPress={() => Linking.openURL(doc.url)}
+                        <TouchableOpacity
+                          key={docIndex}
+                          onPress={() => Linking.openURL(doc.url)}
+                        >
+                          <Text
+                            style={{
+                              color: "#0d6efd",
+                              textDecorationLine: "underline",
+                              marginVertical: 4,
+                              fontWeight: "600",
+                            }}
                           >
-                            <Text
-                              style={{
-                                color: "blue",
-                                textDecorationLine: "underline",
-                              }}
-                            >
-                              View Document {docIndex + 1}
-                            </Text>
-                          </TouchableOpacity>
-                          <Text>
-                            Uploaded At:{" "}
-                            {new Date(doc.uploadedAt).toLocaleDateString("en-GB", {
-                              day: "2-digit",
-                              month: "short",
-                              year: "numeric",
-                            })}
+                            View Document {docIndex + 1}
                           </Text>
-                        </View>
+                        </TouchableOpacity>
                       ))}
                     </View>
                   )}
@@ -231,7 +457,7 @@ const Finance = () => {
               ))
           ) : (
             <Text style={{ textAlign: "center", marginTop: 20 }}>
-              No approved finance
+              No approved reimbursements found
             </Text>
           )}
         </ScrollView>
