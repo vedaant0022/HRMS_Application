@@ -5,6 +5,7 @@ import { useNavigation } from '@react-navigation/native'
 import useUserStore from '../../../zustand/Store/useUserStore'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { errorMessage, successMessage } from '../../../utils'
+import HomeBar from '../../../components/Employee/Homebar/HomeBar'
 
 const Profile = () => {
   const navigation = useNavigation();
@@ -24,6 +25,9 @@ const Profile = () => {
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
       <ScrollView scrollEnabled style={{ flex: 1 }}>
+        <View>
+          <HomeBar />
+        </View>
         <View style={{ flex: 1, backgroundColor: '#fff' }}>
           {/* Basic Profile details */}
           <View style={{ alignItems: 'center', marginTop: moderateScaleVertical(40) }}>

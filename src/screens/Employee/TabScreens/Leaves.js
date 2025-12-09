@@ -10,6 +10,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { base_url } from '../../../utils/url';
 import useUserStore from '../../../zustand/Store/useUserStore';
 import { useNavigation } from '@react-navigation/native';
+import HomeBar from '../../../components/Employee/Homebar/HomeBar';
 
 
 
@@ -250,8 +251,6 @@ const Leaves = () => {
       </View>
     );
   };
-
-
 
   const approvedcontent = () => {
     return (
@@ -671,6 +670,9 @@ const Leaves = () => {
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
+      <View>
+          <HomeBar />
+        </View>
       <ScrollView>
         <View style={{ flex: 1 }}>
           <View style={{

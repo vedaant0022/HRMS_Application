@@ -4,6 +4,7 @@ import { moderateScale, moderateScaleVertical } from '../../../styles/Responsive
 import Map from '../../../components/Employee/Map/Map';
 import moment from 'moment';
 import { successMessage } from '../../../utils';
+import HomeBar from '../../../components/Employee/Homebar/HomeBar';
 
 const Home = () => {
   const [ischeckin, setischeckin] = useState(false);
@@ -67,7 +68,7 @@ const Home = () => {
       <View style={{ flex: 1 }}>
         {/* Header */}
         <View style={{ marginLeft: moderateScale(20), marginRight: moderateScale(20) }} />
-
+<HomeBar />
         <View style={{ marginTop: moderateScaleVertical(20), height: moderateScaleVertical(450) }}>
           <Map />
         </View>

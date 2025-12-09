@@ -30,7 +30,7 @@ const EmployeeTab = () => {
               }}
             />
             <View>
-              <Text style={{ fontSize: 16, fontWeight: '600', color: '#000' }}>{user.User.personalDetails.firstName} {user.User.personalDetails.lastName}</Text>
+              {/* <Text style={{ fontSize: 16, fontWeight: '600', color: '#000' }}>{user.User.personalDetails.firstName} {user.User.personalDetails.lastName}</Text> */}
               <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                 <Text style={{ color: 'green', fontSize: 16 }}>●</Text>
                 <Text style={{ fontSize: 14, color: '#555', marginLeft: 4 }}>Online</Text>
@@ -52,7 +52,7 @@ const EmployeeTab = () => {
     <Tab.Navigator
       initialRouteName='Home'
       screenOptions={{
-        headerShown: true,
+        headerShown: false,
         header: EmpHeader,
         tabBarActiveTintColor: 'red',
         tabBarInactiveTintColor: 'grey', tabBarShowLabel: false,

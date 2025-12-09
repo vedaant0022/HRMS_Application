@@ -10,6 +10,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import useUserStore from '../../../zustand/Store/useUserStore';
 import axios from 'axios';
 import { base_url } from '../../../utils/url';
+import HomeBar from '../../../components/Employee/Homebar/HomeBar';
 
 
 if (Platform.OS === 'android') {
@@ -319,57 +320,6 @@ const Finance = () => {
     getfinanceRequests();
   }, [])
 
-  // const submitLeave = async () => {
-  //   try {
-  //     const token = await AsyncStorage.getItem("access_token");
-  //     const user = useUserStore.getState().user;
-  //     const id = user?.User?._id;
-
-  //     if (!description || !amount || !selectedOption || !document) {
-  //       errorMessage("Please Enter all fields");
-  //       return;
-  //     }
-  //     if (!token) {
-  //       errorMessage("Unauthorized Access");
-  //       return;
-  //     }
-  //     if (!id) {
-  //       errorMessage("Invalid user data");
-  //       return;
-  //     }
-
-  //     const formData = new FormData();
-  //     formData.append("category", selectedOption);
-  //     formData.append("amount", amount);
-  //     formData.append("description", description);
-  //     formData.append("documents", {
-  //       uri: document.uri || document,
-  //       type: document.type || "image/jpeg",
-  //       name: document.fileName || "upload.jpg",
-  //     });
-
-  //     console.log("FORMDATA SENT >>> ", formData);
-
-  //     const response = await axios.post(
-  //       `${base_url}/reimbursement/apply`,
-  //       formData,
-  //       {
-  //         headers: {
-  //           "Content-Type": "multipart/form-data",
-  //           Authorization: `Bearer ${token}`,
-  //         },
-  //       }
-  //     );
-
-  //     console.log("RESPONSE >>>", response.data);
-  //     successMessage("Reimbursement submitted successfully");
-  //     setModal(false)
-  //   } catch (error) {
-  //     console.error("Error submitting reimbursement >>>", error.response?.data || error.message);
-  //     errorMessage("Failed to submit reimbursement");
-  //   }
-  // };
-
 
   const submitLeave = async () => {
     try {
@@ -599,6 +549,9 @@ const Finance = () => {
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
       <View style={{ flex: 1 }}>
+        <View>
+          <HomeBar />
+        </View>
 
         <View style={{
           flexDirection: 'row',
